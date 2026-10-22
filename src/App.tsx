@@ -8,9 +8,9 @@ type Customer = {
 };
 
 const initialCustomers: Customer[] = [
-  { id: 1, name: 'Olivia Bennett', email: 'olivia.bennett@email.com', phone: '(503) 555-0142' },
-  { id: 2, name: 'Noah Williams', email: 'noah.williams@email.com', phone: '(503) 555-0188' },
-  { id: 3, name: 'Ava Martinez', email: 'ava.martinez@email.com', phone: '(971) 555-0126' },
+  { id: 1, name: 'Olivia Bennett', email: 'olivia.bennett@email.com', phone: '(402) 555-0142' },
+  { id: 2, name: 'Noah Williams', email: 'noah.williams@email.com', phone: '(402) 555-0188' },
+  { id: 3, name: 'Ava Martinez', email: 'ava.martinez@email.com', phone: '(402) 555-0126' },
 ];
 
 function SearchIcon() {
@@ -244,7 +244,7 @@ function App() {
                   autoComplete="tel"
                   className="mt-1.5 block h-11 w-full rounded-md border border-stone-300 px-3 text-sm outline-none placeholder:text-stone-400 focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/15"
                   name="phone"
-                  placeholder="(555) 555-5555"
+                  placeholder="(402) 555-0123"
                   required
                   type="tel"
                 />
