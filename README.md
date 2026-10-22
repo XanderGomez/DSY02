@@ -21,4 +21,8 @@ Managers will additionally be able to view analytics related to:
 
 ## Development
 
-Development setup instructions will be added after the project technology stack is finalized.
+Install the dependencies recorded in the lockfile with `npm ci`, then start the
+application with `npm start`.
+
+Run `npm run typecheck` to check TypeScript without generating files, and
+`npm run lint` to check code style.
