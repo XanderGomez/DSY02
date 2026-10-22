@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, Menu } from 'electron';
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
 
@@ -8,26 +8,38 @@ if (started) {
 }
 
 const createWindow = () => {
-  // Create the browser window.
+  Menu.setApplicationMenu(null);
+
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
+    minWidth: 420,
+    minHeight: 520,
+    show: false,
+    backgroundColor: '#fafaf9',
+    title: "Dragon's Lair",
     webPreferences: {
       preload: path.join(__dirname, 'preload.cjs'),
     },
   });
 
-  // and load the index.html of the app.
-  if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
-    mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
-  } else {
-    mainWindow.loadFile(
-      path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`),
-    );
-  }
+  mainWindow.maximize();
 
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show();
+  });
+
+  if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
+    void mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL).catch((error: unknown) => {
+      console.error('Failed to load the renderer development server:', error);
+    });
+  } else {
+    void mainWindow.loadFile(
+      path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`),
+    ).catch((error: unknown) => {
+      console.error('Failed to load the renderer application:', error);
+    });
+  }
 };
 
 // This method will be called when Electron has finished
