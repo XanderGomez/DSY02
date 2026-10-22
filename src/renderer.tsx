@@ -2,6 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 
 import App from './App';
+//import App from './Login'; // Uncomment to load login page
 import './index.css';
 
 const rootElement = document.getElementById('root');
