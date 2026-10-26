@@ -1,17 +1,16 @@
 import { useMemo, useState, type FormEvent } from 'react';
 
-type Customer = {
-  id: number;
-  name: string;
-  email: string;
-  phone: string;
-};
+import type { CustomerAccountDetails as Customer } from './CustomerAccount';
 
-const initialCustomers: Customer[] = [
-  { id: 1, name: 'Olivia Bennett', email: 'olivia.bennett@email.com', phone: '(402) 555-0142' },
-  { id: 2, name: 'Noah Williams', email: 'noah.williams@email.com', phone: '(402) 555-0188' },
-  { id: 3, name: 'Ava Martinez', email: 'ava.martinez@email.com', phone: '(402) 555-0126' },
-];
+type AppProps = {
+  customers: Customer[];
+  query: string;
+  onQueryChange: (query: string) => void;
+  onSelectCustomer: (customer: Customer) => void;
+  onCreateCustomer: (customer: Customer) => void;
+  onManager: () => void;
+  onLogout: () => void;
+};
 
 function SearchIcon() {
   return (
@@ -22,10 +21,7 @@ function SearchIcon() {
   );
 }
 
-function App() {
-  const [customers, setCustomers] = useState(initialCustomers);
-  const [query, setQuery] = useState('');
-  const [selectedCustomer, setSelectedCustomer] = useState<number | null>(null);
+function App({ customers, query, onQueryChange, onSelectCustomer, onCreateCustomer, onManager, onLogout }: AppProps) {
   const [isCreating, setIsCreating] = useState(false);
   const [createError, setCreateError] = useState('');
 
@@ -49,8 +45,7 @@ function App() {
   }, [customers, query]);
 
   function handleSearchChange(value: string) {
-    setQuery(value);
-    setSelectedCustomer(null);
+    onQueryChange(value);
   }
 
   function handleCreateCustomer(event: FormEvent<HTMLFormElement>) {
@@ -74,18 +69,13 @@ function App() {
       name: String(formData.get('name')).trim(),
       email: String(formData.get('email')).trim(),
       phone,
+      creditBalance: 0,
     };
 
-    setCustomers((currentCustomers) => [customer, ...currentCustomers]);
-    setQuery(phone);
-    setSelectedCustomer(customer.id);
+    onQueryChange(phone);
     setCreateError('');
     setIsCreating(false);
-  }
-
-  function handleLeaveAccount() {
-    setQuery('');
-    setSelectedCustomer(null);
+    onCreateCustomer(customer);
   }
 
   return (
@@ -95,13 +85,16 @@ function App() {
           <span aria-hidden="true" className="size-2 rounded-full bg-lime-300" />
           Dragon&apos;s Lair
         </span>
+        <nav aria-label="Staff navigation" className="flex items-center gap-2">
+        <button className="rounded-md px-3 py-2 text-sm text-emerald-100 hover:bg-emerald-900 hover:text-white focus-visible:outline-2 focus-visible:outline-lime-300" onClick={onManager} type="button">Manager</button>
         <button
           className="rounded-md px-3 py-2 text-sm text-emerald-100 hover:bg-emerald-900 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime-300"
-          onClick={handleLeaveAccount}
+          onClick={onLogout}
           type="button"
         >
-          Leave account
+          Log out
         </button>
+        </nav>
       </header>
 
       <section className="mx-auto mt-8 w-full max-w-3xl rounded-xl border border-emerald-200 bg-[#f3f8f1] px-5 pb-16 pt-8 shadow-sm shadow-emerald-950/5 sm:mt-12 sm:px-8 sm:pt-10">
@@ -158,7 +151,6 @@ function App() {
           {query.trim() && matchingCustomers.length > 0 ? (
             <ul className="divide-y divide-emerald-100 rounded-b-lg border-x border-b border-emerald-200 bg-emerald-50">
               {matchingCustomers.map((customer) => {
-                const isSelected = selectedCustomer === customer.id;
                 const displayName = customer.name || customer.phone;
                 const contactDetails = [
                   customer.name ? customer.phone : '',
@@ -168,9 +160,8 @@ function App() {
                 return (
                   <li key={customer.id}>
                     <button
-                      aria-pressed={isSelected}
-                      className={`group flex min-h-[72px] w-full items-center justify-between gap-4 px-4 text-left transition-colors hover:bg-emerald-100 focus-visible:outline-2 focus-visible:outline-inset focus-visible:outline-emerald-700 ${isSelected ? 'bg-emerald-100' : 'bg-emerald-50'}`}
-                      onClick={() => setSelectedCustomer(isSelected ? null : customer.id)}
+                      className="group flex min-h-[72px] w-full items-center justify-between gap-4 bg-emerald-50 px-4 text-left transition-colors hover:bg-emerald-100 focus-visible:outline-2 focus-visible:outline-inset focus-visible:outline-emerald-700"
+                      onClick={() => onSelectCustomer(customer)}
                       type="button"
                     >
                       <span className="min-w-0">
@@ -181,7 +172,7 @@ function App() {
                       </span>
                       <svg
                         aria-hidden="true"
-                        className={`size-5 shrink-0 stroke-current transition-transform group-hover:translate-x-0.5 ${isSelected ? 'text-emerald-800' : 'text-stone-400'}`}
+                        className="size-5 shrink-0 stroke-current text-stone-400 transition-transform group-hover:translate-x-0.5"
                         fill="none"
                         viewBox="0 0 24 24"
                       >

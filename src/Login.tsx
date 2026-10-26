@@ -13,9 +13,10 @@ function LockIcon() {
 type LoginProps = {
   // Supply consecutive failures when authentication is connected.
   failedLoginAttempts?: number;
+  onLogin?: () => void;
 };
 
-function Login({ failedLoginAttempts = 0 }: LoginProps) {
+function Login({ failedLoginAttempts = 0, onLogin }: LoginProps) {
   const [pin, setPin] = useState('');
 
   return (
@@ -34,7 +35,7 @@ function Login({ failedLoginAttempts = 0 }: LoginProps) {
             <h1 id="login-title" className="text-2xl font-semibold tracking-tight text-emerald-950 sm:text-3xl">Welcome back</h1>
             <p className="mt-2 text-sm text-stone-600">Enter your employee PIN to log in.</p>
 
-            <form className="mt-8" onSubmit={(event) => event.preventDefault()}>
+            <form className="mt-8" onSubmit={(event) => { event.preventDefault(); if (pin) onLogin?.(); }}>
               <label className="block text-sm font-medium text-emerald-950" htmlFor="employee-pin">Employee PIN</label>
               <div className="mt-2 flex min-h-14 items-center gap-3 rounded-lg border-2 border-emerald-700 bg-emerald-50 px-4 text-emerald-800 shadow-sm shadow-emerald-950/5 focus-within:ring-4 focus-within:ring-emerald-800/20">
                 <LockIcon />
@@ -46,16 +47,16 @@ function Login({ failedLoginAttempts = 0 }: LoginProps) {
                   inputMode="numeric"
                   onChange={(event) => setPin(event.target.value.replace(/\D/g, ''))}
                   pattern="[0-9]*"
+                  required
                   placeholder="Enter your PIN"
                   spellCheck={false}
                   type="password"
                   value={pin}
                 />
               </div>
-              <p id="pin-help" className="mt-2 text-xs text-stone-500">Use the PIN assigned to your staff account.</p>
+              <p id="pin-help" className="mt-2 text-xs text-stone-500">{onLogin ? 'Demo: enter any numeric PIN. Authentication is not connected.' : 'Use the PIN assigned to your staff account.'}</p>
               <div className="mt-4 flex justify-end">
-                {/* Visual preview only; authentication will be connected later. */}
-                <button disabled className="min-h-11 min-w-28 cursor-not-allowed rounded-md border border-emerald-700/40 bg-emerald-100 px-5 py-2 text-sm font-medium text-emerald-950" type="button">
+                <button disabled={!pin || !onLogin} className="min-h-11 min-w-28 rounded-md border border-emerald-700/40 bg-emerald-100 px-5 py-2 text-sm font-medium text-emerald-950 hover:bg-emerald-200 focus-visible:outline-2 focus-visible:outline-emerald-800 disabled:cursor-not-allowed disabled:opacity-50" type="submit">
                   Log in
                 </button>
               </div>

@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import TradeAccountContext, { type TradePageProps } from './TradeAccountContext';
 
 const categoryOptions: Record<string, string[]> = {
   'Trading cards': ['Magic: The Gathering', 'Pokémon', 'Yu-Gi-Oh!', 'Other trading cards'],
@@ -14,7 +15,7 @@ function filterClass(selected: boolean) {
   return `min-h-11 rounded-md border px-3 py-2 text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-800 ${selected ? 'border-emerald-800 bg-emerald-800 text-white' : 'border-emerald-200 bg-white text-emerald-950 hover:bg-emerald-100'}`;
 }
 
-export default function TradeInPage() {
+export default function TradeInPage({ customer, onBackToAccount }: TradePageProps) {
   const [category, setCategory] = useState('');
   const [subcategory, setSubcategory] = useState('');
   const [itemName, setItemName] = useState('');
@@ -82,6 +83,7 @@ export default function TradeInPage() {
         <span className="text-xs text-emerald-100">Trade in</span>
       </header>
       <section className="mx-auto mt-8 w-full max-w-3xl rounded-xl border border-emerald-200 bg-[#f3f8f1] p-5 shadow-sm sm:mt-12 sm:p-8">
+        <TradeAccountContext customer={customer} onBackToAccount={onBackToAccount} />
         <h1 className="text-2xl font-semibold tracking-tight text-emerald-950 sm:text-3xl">Trade in</h1>
         <p className="mt-2 text-sm text-stone-600">Describe the item the customer is trading in and enter the store credit offered.</p>
         <form className="mt-7" onSubmit={reviewForm}>

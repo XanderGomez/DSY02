@@ -52,7 +52,7 @@ function StatCard({
   );
 }
 
-function ManagerPage() {
+function ManagerPage({ onBackToSearch }: { onBackToSearch?: () => void }) {
   const [period, setPeriod] = useState<'Today' | 'This week'>('Today');
   const [employeeIdInput, setEmployeeIdInput] = useState('');
   const [employeeId, setEmployeeId] = useState('');
@@ -92,7 +92,7 @@ function ManagerPage() {
           <span aria-hidden="true" className="size-2 rounded-full bg-lime-300" />
           Dragon&apos;s Lair
         </span>
-        <span className="text-xs font-medium text-emerald-100">Manager</span>
+        {onBackToSearch ? <button type="button" onClick={onBackToSearch} className="rounded-md px-3 py-2 text-sm text-emerald-100 hover:bg-emerald-900 focus-visible:outline-2 focus-visible:outline-lime-300">Back to search</button> : <span className="text-xs font-medium text-emerald-100">Manager</span>}
       </header>
 
       <div className="mx-auto max-w-6xl px-5 pb-8 sm:px-8">
@@ -101,6 +101,7 @@ function ManagerPage() {
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-emerald-800">Manager</p>
               <h1 className="mt-1 text-xl font-semibold tracking-tight text-emerald-950 sm:text-2xl">Trade activity</h1>
+              <p className="mt-1 text-xs text-stone-500">Sample activity for demonstration.</p>
             </div>
             <div aria-label="Summary period" className="inline-flex self-start rounded-lg border border-emerald-200 bg-white p-1 sm:self-auto" role="group">
               {(['Today', 'This week'] as const).map((option) => (
