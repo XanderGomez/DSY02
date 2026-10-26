@@ -26,3 +26,24 @@ application with `npm start`.
 
 Run `npm run typecheck` to check TypeScript without generating files, and
 `npm run lint` to check code style.
+
+## Frontend demo
+
+The app starts at staff login. Enter any nonempty numeric PIN to open customer
+search; this is demo navigation, not authentication. Search for Olivia, Noah,
+or Ava, or create an account. Selecting a customer opens their credit balance,
+with links to trade in and trade out. Each trade page returns to that same account.
+Search also links to the manager dashboard and provides Log out.
+
+Customer records and the search query remain in memory while navigating. Reloading
+resets the demo and returns to login. Trade forms validate inputs only; they do not
+change balances or save transactions. Manager activity is sample data, and manager
+access is unrestricted in this demo.
+
+For a browser preview, run `npx vite --config vite.renderer.config.ts` and open the
+local URL printed in the terminal. The normal entry point now loads the whole app;
+no temporary preview script is needed. Hash URLs support Electron and browser
+Back/Forward navigation. Unknown URLs or missing customers return to search when
+logged in, and to login otherwise.
+
+Run routing checks with `node --test tests/routes.test.cjs` (Node 24 or newer).
