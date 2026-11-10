@@ -1,6 +1,21 @@
-const { test } = require('node:test');
+const { before, test } = require('node:test');
 const assert = require('node:assert/strict');
-const { activityDays, getPeriodTrades, summarizeTrades, trades } = require('../src/managerMetrics.ts');
+let activityDays, getPeriodTrades, summarizeTrades, trades;
+
+// Load the page through Vite so these checks exercise the colocated TSX helpers.
+before(async () => {
+  const { createServer } = await import('vite');
+  const server = await createServer({
+    configFile: false,
+    server: { middlewareMode: true, hmr: false, ws: false, watch: null },
+    appType: 'custom',
+  });
+  try {
+    ({ activityDays, getPeriodTrades, summarizeTrades, trades } = await server.ssrLoadModule('/src/ManagerPage.tsx'));
+  } finally {
+    await server.close();
+  }
+});
 const { storeLocations } = require('../src/session.ts');
 
 test('store breakdown uses the current locations and reconciles with the summary', () => {
