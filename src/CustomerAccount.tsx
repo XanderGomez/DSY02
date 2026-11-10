@@ -9,7 +9,6 @@ export type CustomerAccountDetails = {
 
 export type CustomerAccountProps = {
   customer: CustomerAccountDetails;
-  onBackToSearch: () => void;
   onTradeIn: () => void;
   onTradeOut: () => void;
 };
@@ -42,28 +41,11 @@ function TradeIcon({ direction }: { direction: 'in' | 'out' }) {
 
 function CustomerAccount({
   customer,
-  onBackToSearch,
   onTradeIn,
   onTradeOut,
 }: CustomerAccountProps) {
   return (
-    <main className="min-h-screen bg-[#e6f0e5] text-stone-900">
-      <header className="flex h-16 items-center justify-between border-b border-emerald-950 bg-emerald-950 px-5 text-white sm:px-8">
-        <span className="flex items-center gap-2 text-sm font-semibold tracking-tight">
-          <span aria-hidden="true" className="size-2 rounded-full bg-lime-300" />
-          Dragon&apos;s Lair
-        </span>
-        <button
-          className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-emerald-100 hover:bg-emerald-900 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime-300"
-          onClick={onBackToSearch}
-          type="button"
-        >
-          <svg aria-hidden="true" className="size-4 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
-            <path d="M20 12H4m6-6-6 6 6 6" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" />
-          </svg>
-          Back to search
-        </button>
-      </header>
+    <main className="bg-[#e6f0e5] text-stone-900">
 
       <div className="mx-auto w-full max-w-3xl px-5 pb-12 pt-8 sm:px-8 sm:pt-12">
         <section aria-labelledby="credit-balance-title" className="rounded-xl border border-emerald-200 bg-[#f3f8f1] px-5 py-8 shadow-sm shadow-emerald-950/5 sm:px-8 sm:py-10">

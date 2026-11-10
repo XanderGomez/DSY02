@@ -8,8 +8,6 @@ type AppProps = {
   onQueryChange: (query: string) => void;
   onSelectCustomer: (customer: Customer) => void;
   onCreateCustomer: (customer: Customer) => void;
-  onManager: () => void;
-  onLogout: () => void;
 };
 
 function SearchIcon() {
@@ -21,7 +19,7 @@ function SearchIcon() {
   );
 }
 
-function App({ customers, query, onQueryChange, onSelectCustomer, onCreateCustomer, onManager, onLogout }: AppProps) {
+function App({ customers, query, onQueryChange, onSelectCustomer, onCreateCustomer }: AppProps) {
   const [isCreating, setIsCreating] = useState(false);
   const [createError, setCreateError] = useState('');
 
@@ -79,23 +77,7 @@ function App({ customers, query, onQueryChange, onSelectCustomer, onCreateCustom
   }
 
   return (
-    <main className="min-h-screen bg-[#e6f0e5] text-stone-900">
-      <header className="flex h-16 items-center justify-between border-b border-emerald-950 bg-emerald-950 px-5 text-white sm:px-8">
-        <span className="flex items-center gap-2 text-sm font-semibold tracking-tight">
-          <span aria-hidden="true" className="size-2 rounded-full bg-lime-300" />
-          Dragon&apos;s Lair
-        </span>
-        <nav aria-label="Staff navigation" className="flex items-center gap-2">
-        <button className="rounded-md px-3 py-2 text-sm text-emerald-100 hover:bg-emerald-900 hover:text-white focus-visible:outline-2 focus-visible:outline-lime-300" onClick={onManager} type="button">Manager</button>
-        <button
-          className="rounded-md px-3 py-2 text-sm text-emerald-100 hover:bg-emerald-900 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime-300"
-          onClick={onLogout}
-          type="button"
-        >
-          Log out
-        </button>
-        </nav>
-      </header>
+    <main className="bg-[#e6f0e5] text-stone-900">
 
       <section className="mx-auto mt-8 w-full max-w-3xl rounded-xl border border-emerald-200 bg-[#f3f8f1] px-5 pb-16 pt-8 shadow-sm shadow-emerald-950/5 sm:mt-12 sm:px-8 sm:pt-10">
         <div className="max-w-2xl">
@@ -200,7 +182,7 @@ function App({ customers, query, onQueryChange, onSelectCustomer, onCreateCustom
 
       {isCreating && (
         <div
-          className="fixed inset-0 z-10 flex items-center justify-center bg-stone-950/35 p-4"
+          className="fixed inset-0 z-20 flex items-center justify-center bg-stone-950/35 p-4"
           onMouseDown={(event) => {
             if (event.target === event.currentTarget) {
               setIsCreating(false);
