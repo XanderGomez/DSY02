@@ -29,15 +29,28 @@ Run `npm run typecheck` to check TypeScript without generating files, and
 
 ## Frontend demo
 
-The app starts at staff login. Enter any nonempty numeric PIN to open customer
-search; this is demo navigation, not authentication. Search for Olivia, Noah,
-or Ava, or create an account. Selecting a customer opens their credit balance,
+The app starts with manual store selection, followed by staff login. Select a demo
+employee and enter any nonempty numeric PIN to open customer search; this is demo
+navigation, not authentication. Store colors and demo staff are configured in
+`src/session.ts` (North Location (Main): blue, Millard Location: purple). Locations
+use sponsor-provided contact details; colors are provisional and employee accounts
+are placeholders pending backend authentication. All employees are available at
+both locations; selecting a store does not filter employee accounts.
+Search for Olivia, Noah, or Ava, or create an account. Selecting a customer opens their credit balance,
 with links to trade in and trade out. Each trade page returns to that same account.
-Search also links to the manager dashboard and provides Log out.
+The shared sticky header shows the selected store and employee on every page,
+with Manager and Log out available throughout the logged-in session. Back is
+always below the store banner: trades return to their customer, accounts and the
+manager dashboard return to search. Each button says "Back to" followed by its
+destination. Search and initial store selection have no Back button because they
+are starting points. Login's Back returns to store selection.
 
 Customer records and the search query remain in memory while navigating. Reloading
-resets the demo and returns to login. Trade forms validate inputs only; they do not
-change balances or save transactions. Manager activity is sample data, and manager
+resets the demo and returns to store selection. Logging out clears the employee,
+PIN/form state, and search query while retaining the selected store and customer
+records for the next employee. Browser history cannot reopen logged-in pages after
+logout. Trade forms validate inputs only; they do not change balances or save
+transactions. Manager activity is sample data, and manager
 access is unrestricted in this demo.
 
 For a browser preview, run `npx vite --config vite.renderer.config.ts` and open the

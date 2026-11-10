@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { demoEmployees, type Employee } from './session';
 
 function LockIcon() {
   return (
@@ -13,29 +14,28 @@ function LockIcon() {
 type LoginProps = {
   // Supply consecutive failures when authentication is connected.
   failedLoginAttempts?: number;
-  onLogin?: () => void;
+  onLogin?: (employee: Employee) => void;
 };
 
 function Login({ failedLoginAttempts = 0, onLogin }: LoginProps) {
   const [pin, setPin] = useState('');
+  const [employeeId, setEmployeeId] = useState('');
+  const employee = demoEmployees.find(({ id }) => id === employeeId);
 
   return (
-    <div className="min-h-screen bg-[#e6f0e5] text-stone-900">
-      <header className="flex h-16 items-center justify-between gap-4 border-b border-emerald-950 bg-emerald-950 px-5 text-white sm:px-8">
-        <span className="flex items-center gap-2 text-sm font-semibold tracking-tight">
-          <span aria-hidden="true" className="size-2 rounded-full bg-lime-300" />
-          Dragon&apos;s Lair
-        </span>
-        <span className="text-sm text-emerald-100">Staff login</span>
-      </header>
-
+    <div className="bg-[#e6f0e5] text-stone-900">
       <main className="px-4 pb-12 sm:px-6">
         <section aria-labelledby="login-title" className="mx-auto mt-8 w-full max-w-3xl rounded-xl border border-emerald-200 bg-[#f3f8f1] px-5 pb-12 pt-8 shadow-sm shadow-emerald-950/5 sm:mt-12 sm:px-8 sm:pb-16 sm:pt-10">
           <div className="max-w-2xl">
             <h1 id="login-title" className="text-2xl font-semibold tracking-tight text-emerald-950 sm:text-3xl">Welcome back</h1>
-            <p className="mt-2 text-sm text-stone-600">Enter your employee PIN to log in.</p>
+            <p className="mt-2 text-sm text-stone-600">Choose your demo employee account and enter a PIN to log in.</p>
 
-            <form className="mt-8" onSubmit={(event) => { event.preventDefault(); if (pin) onLogin?.(); }}>
+            <form className="mt-8" onSubmit={(event) => { event.preventDefault(); if (pin && employee) onLogin?.(employee); }}>
+              <label className="block text-sm font-medium text-emerald-950" htmlFor="demo-employee">Demo employee</label>
+              <select id="demo-employee" required value={employeeId} onChange={(event) => setEmployeeId(event.target.value)} className="mb-5 mt-2 min-h-12 w-full rounded-lg border border-emerald-700 bg-white px-3 text-base text-emerald-950 focus-visible:outline-2 focus-visible:outline-emerald-800">
+                <option value="" disabled>Select your employee account</option>
+                {demoEmployees.map(({ id, name }) => <option key={id} value={id}>{name} (#{id})</option>)}
+              </select>
               <label className="block text-sm font-medium text-emerald-950" htmlFor="employee-pin">Employee PIN</label>
               <div className="mt-2 flex min-h-14 items-center gap-3 rounded-lg border-2 border-emerald-700 bg-emerald-50 px-4 text-emerald-800 shadow-sm shadow-emerald-950/5 focus-within:ring-4 focus-within:ring-emerald-800/20">
                 <LockIcon />
@@ -54,9 +54,9 @@ function Login({ failedLoginAttempts = 0, onLogin }: LoginProps) {
                   value={pin}
                 />
               </div>
-              <p id="pin-help" className="mt-2 text-xs text-stone-500">{onLogin ? 'Demo: enter any numeric PIN. Authentication is not connected.' : 'Use the PIN assigned to your staff account.'}</p>
+              <p id="pin-help" className="mt-2 text-xs text-stone-500">Demo: enter any numeric PIN. Authentication is not connected.</p>
               <div className="mt-4 flex justify-end">
-                <button disabled={!pin || !onLogin} className="min-h-11 min-w-28 rounded-md border border-emerald-700/40 bg-emerald-100 px-5 py-2 text-sm font-medium text-emerald-950 hover:bg-emerald-200 focus-visible:outline-2 focus-visible:outline-emerald-800 disabled:cursor-not-allowed disabled:opacity-50" type="submit">
+                <button disabled={!pin || !employee || !onLogin} className="min-h-11 min-w-28 rounded-md border border-emerald-700/40 bg-emerald-100 px-5 py-2 text-sm font-medium text-emerald-950 hover:bg-emerald-200 focus-visible:outline-2 focus-visible:outline-emerald-800 disabled:cursor-not-allowed disabled:opacity-50" type="submit">
                   Log in
                 </button>
               </div>

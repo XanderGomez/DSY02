@@ -8,7 +8,7 @@ function filterClass(selected: boolean) {
   return `min-h-11 rounded-md border px-3 py-2 text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-800 ${selected ? 'border-emerald-800 bg-emerald-800 text-white' : 'border-emerald-200 bg-white text-emerald-950 hover:bg-emerald-100'}`;
 }
 
-export default function TradeOutPage({ customer, onBackToAccount, categoryTradeCounts }: TradePageProps & { categoryTradeCounts?: CategoryTradeCounts }) {
+export default function TradeOutPage({ customer, categoryTradeCounts }: TradePageProps & { categoryTradeCounts?: CategoryTradeCounts }) {
   const [category, setCategory] = useState('');
   const [showMoreCategories, setShowMoreCategories] = useState(false);
   // Each page receives counts for its own trade direction only.
@@ -64,13 +64,9 @@ export default function TradeOutPage({ customer, onBackToAccount, categoryTradeC
   }
 
   return (
-    <main className="min-h-screen bg-[#e6f0e5] pb-12 text-stone-900">
-      <header className="flex h-16 items-center justify-between bg-emerald-950 px-5 text-white sm:px-8">
-        <span className="flex items-center gap-2 text-sm font-semibold tracking-tight"><span aria-hidden="true" className="size-2 rounded-full bg-lime-300" />Dragon&apos;s Lair</span>
-        <span className="text-xs text-emerald-100">Trade out</span>
-      </header>
+    <main className="bg-[#e6f0e5] pb-12 text-stone-900">
       <section className="mx-auto mt-8 w-full max-w-3xl rounded-xl border border-emerald-200 bg-[#f3f8f1] p-5 shadow-sm sm:mt-12 sm:p-8">
-        <TradeAccountContext customer={customer} onBackToAccount={onBackToAccount} />
+        <TradeAccountContext customer={customer} />
         <h1 className="text-2xl font-semibold tracking-tight text-emerald-950 sm:text-3xl">Trade out</h1>
         <p className="mt-2 text-sm text-stone-600">Describe the item being traded out and enter its agreed trade amount.</p>
         <form className="mt-7" onSubmit={reviewForm}>
