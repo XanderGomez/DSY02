@@ -7,25 +7,27 @@ type Trade = {
   employee: string;
   employeeId: string;
   store: string;
+  item: string;
+  category: string;
   amount: number;
   time: string;
   day: 'Today' | 'Yesterday' | 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday';
 };
 
 const trades: Trade[] = [
-  { id: 'TR-2841', kind: 'Trade in', account: 'Maya Thompson', employee: 'Jordan Davis', employeeId: '1042', store: 'North Location (Main)', amount: 42.5, time: '10:42 AM', day: 'Today' },
+  { id: 'TR-2841', kind: 'Trade in', account: 'Maya Thompson', employee: 'Jordan Davis', employeeId: '1042', store: 'North Location', amount: 42.5, time: '10:42 AM', day: 'Today' },
   { id: 'TR-2840', kind: 'Trade out', account: 'Liam Carter', employee: 'Alex Kim', employeeId: '1087', store: 'Millard Location', amount: 28, time: '10:18 AM', day: 'Today' },
-  { id: 'TR-2839', kind: 'Trade in', account: 'Elena Garcia', employee: 'Jordan Davis', employeeId: '1042', store: 'North Location (Main)', amount: 65, time: '9:56 AM', day: 'Today' },
-  { id: 'TR-2838', kind: 'Trade in', account: 'Oliver Reed', employee: 'Morgan Lee', employeeId: '1124', store: 'North Location (Main)', amount: 18.75, time: '9:21 AM', day: 'Today' },
+  { id: 'TR-2839', kind: 'Trade in', account: 'Elena Garcia', employee: 'Jordan Davis', employeeId: '1042', store: 'North Location', amount: 65, time: '9:56 AM', day: 'Today' },
+  { id: 'TR-2838', kind: 'Trade in', account: 'Oliver Reed', employee: 'Morgan Lee', employeeId: '1124', store: 'North Location', amount: 18.75, time: '9:21 AM', day: 'Today' },
   { id: 'TR-2837', kind: 'Trade out', account: 'Sofia Patel', employee: 'Alex Kim', employeeId: '1087', store: 'Millard Location', amount: 35, time: 'Yesterday', day: 'Yesterday' },
-  { id: 'TR-2836', kind: 'Trade in', account: 'Ethan Brooks', employee: 'Jordan Davis', employeeId: '1042', store: 'North Location (Main)', amount: 53.25, time: 'Yesterday', day: 'Yesterday' },
-  { id: 'TR-2835', kind: 'Trade in', account: 'Nora Wilson', employee: 'Morgan Lee', employeeId: '1124', store: 'North Location (Main)', amount: 31, time: 'Yesterday', day: 'Yesterday' },
+  { id: 'TR-2836', kind: 'Trade in', account: 'Ethan Brooks', employee: 'Jordan Davis', employeeId: '1042', store: 'North Location', amount: 53.25, time: 'Yesterday', day: 'Yesterday' },
+  { id: 'TR-2835', kind: 'Trade in', account: 'Nora Wilson', employee: 'Morgan Lee', employeeId: '1124', store: 'North Location', amount: 31, time: 'Yesterday', day: 'Yesterday' },
   { id: 'TR-2834', kind: 'Trade in', account: 'Theo Martin', employee: 'Alex Kim', employeeId: '1087', store: 'Millard Location', amount: 24, time: 'Monday', day: 'Monday' },
-  { id: 'TR-2833', kind: 'Trade out', account: 'Avery Scott', employee: 'Morgan Lee', employeeId: '1124', store: 'North Location (Main)', amount: 19.5, time: 'Monday', day: 'Monday' },
-  { id: 'TR-2832', kind: 'Trade in', account: 'Isabel Moore', employee: 'Jordan Davis', employeeId: '1042', store: 'North Location (Main)', amount: 46, time: 'Tuesday', day: 'Tuesday' },
+  { id: 'TR-2833', kind: 'Trade out', account: 'Avery Scott', employee: 'Morgan Lee', employeeId: '1124', store: 'North Location', amount: 19.5, time: 'Monday', day: 'Monday' },
+  { id: 'TR-2832', kind: 'Trade in', account: 'Isabel Moore', employee: 'Jordan Davis', employeeId: '1042', store: 'North Location', amount: 46, time: 'Tuesday', day: 'Tuesday' },
   { id: 'TR-2831', kind: 'Trade in', account: 'Caleb Young', employee: 'Alex Kim', employeeId: '1087', store: 'Millard Location', amount: 37.5, time: 'Wednesday', day: 'Wednesday' },
-  { id: 'TR-2830', kind: 'Trade in', account: 'Zoe Adams', employee: 'Morgan Lee', employeeId: '1124', store: 'North Location (Main)', amount: 29, time: 'Thursday', day: 'Thursday' },
-  { id: 'TR-2829', kind: 'Trade in', account: 'Milo Baker', employee: 'Jordan Davis', employeeId: '1042', store: 'North Location (Main)', amount: 58, time: 'Friday', day: 'Friday' },
+  { id: 'TR-2830', kind: 'Trade in', account: 'Zoe Adams', employee: 'Morgan Lee', employeeId: '1124', store: 'North Location', amount: 29, time: 'Thursday', day: 'Thursday' },
+  { id: 'TR-2829', kind: 'Trade in', account: 'Milo Baker', employee: 'Jordan Davis', employeeId: '1042', store: 'North Location', amount: 58, time: 'Friday', day: 'Friday' },
   { id: 'TR-2828', kind: 'Trade out', account: 'Ruby Evans', employee: 'Alex Kim', employeeId: '1087', store: 'Millard Location', amount: 22, time: 'Saturday', day: 'Saturday' },
 ];
 
@@ -56,6 +58,7 @@ function ManagerPage() {
   const [period, setPeriod] = useState<'Today' | 'This week'>('Today');
   const [employeeIdInput, setEmployeeIdInput] = useState('');
   const [employeeId, setEmployeeId] = useState('');
+  const [selectedTrade, setSelectedTrade] = useState<Trade | null>(null);
 
   const todayTradeIns = trades.filter((trade) => trade.kind === 'Trade in' && trade.day === 'Today');
   const weeklyTradeIns = trades.filter((trade) => trade.kind === 'Trade in');
@@ -215,7 +218,7 @@ function ManagerPage() {
               <table className="w-full min-w-[680px] border-collapse text-left">
                 <thead>
                   <tr className="border-b border-emerald-200 text-[10px] font-semibold uppercase tracking-wide text-stone-500">
-                    <th className="py-2 pr-3">Type</th>
+                    <th className="py-2 pr-3">Transaction</th>
                     <th className="px-3 py-2">Account</th>
                     <th className="px-3 py-2">Employee</th>
                     <th className="px-3 py-2">Store</th>
@@ -225,9 +228,17 @@ function ManagerPage() {
                 </thead>
                 <tbody className="divide-y divide-emerald-100">
                   {trades.slice(0, 5).map((trade) => (
-                    <tr className="text-xs hover:bg-emerald-50/60" key={trade.id}>
+                    <tr className="cursor-pointer text-xs hover:bg-emerald-50/60" key={trade.id} onClick={() => setSelectedTrade(trade)}>
                       <td className="py-2 pr-3">
-                        <span className={`inline-flex items-center gap-1.5 font-medium ${trade.kind === 'Trade in' ? 'text-emerald-800' : 'text-amber-800'}`}>
+                        <button
+                          aria-label={`View receipt for transaction ${trade.id}`}
+                          className="rounded px-1 py-1 text-left font-semibold text-emerald-800 underline decoration-emerald-300 underline-offset-2 hover:text-emerald-950 focus-visible:outline-2 focus-visible:outline-emerald-800"
+                          onClick={() => setSelectedTrade(trade)}
+                          type="button"
+                        >
+                          {trade.id}
+                        </button>
+                        <span className={`ml-2 inline-flex items-center gap-1.5 font-medium ${trade.kind === 'Trade in' ? 'text-emerald-800' : 'text-amber-800'}`}>
                           <span className={`size-1.5 rounded-full ${trade.kind === 'Trade in' ? 'bg-emerald-600' : 'bg-amber-500'}`} />
                           {trade.kind}
                         </span>
@@ -244,6 +255,54 @@ function ManagerPage() {
                 </tbody>
               </table>
             </div>
+            {selectedTrade && (
+              <section aria-labelledby="transaction-receipt-title" className="mx-auto mt-5 max-w-xl rounded-lg border border-emerald-200 bg-white p-5 shadow-sm" aria-live="polite">
+                <div className="flex items-start justify-between gap-4 border-b border-dashed border-emerald-200 pb-4">
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-emerald-800">Transaction receipt</p>
+                    <h3 className="mt-1 text-lg font-semibold text-emerald-950" id="transaction-receipt-title">{selectedTrade.id}</h3>
+                    <p className="mt-1 text-xs text-stone-500">{selectedTrade.day} · {selectedTrade.time}</p>
+                  </div>
+                  <button
+                    aria-label="Close transaction receipt"
+                    className="rounded-md px-2 py-1 text-sm text-stone-600 hover:bg-emerald-50 focus-visible:outline-2 focus-visible:outline-emerald-800"
+                    onClick={() => setSelectedTrade(null)}
+                    type="button"
+                  >
+                    Close
+                  </button>
+                </div>
+                <dl className="grid grid-cols-2 gap-x-4 gap-y-3 border-b border-dashed border-emerald-200 py-4 text-sm">
+                  <div>
+                    <dt className="text-xs text-stone-500">Transaction type</dt>
+                    <dd className="mt-1 font-medium text-stone-800">{selectedTrade.kind}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-xs text-stone-500">Customer account</dt>
+                    <dd className="mt-1 font-medium text-stone-800">{selectedTrade.account}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-xs text-stone-500">Employee</dt>
+                    <dd className="mt-1 font-medium text-stone-800">{selectedTrade.employee} · #{selectedTrade.employeeId}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-xs text-stone-500">Store</dt>
+                    <dd className="mt-1 font-medium text-stone-800">{selectedTrade.store}</dd>
+                  </div>
+                </dl>
+                <div className="flex items-start justify-between gap-4 py-4 text-sm">
+                  <div>
+                    <p className="font-medium text-stone-800">{selectedTrade.item}</p>
+                    <p className="mt-1 text-xs text-stone-500">{selectedTrade.category}</p>
+                  </div>
+                  <p className="shrink-0 font-medium text-stone-800">{currency.format(selectedTrade.amount)}</p>
+                </div>
+                <div className="flex items-baseline justify-between border-t border-emerald-200 pt-3">
+                  <p className="text-sm font-semibold text-stone-800">{selectedTrade.kind === 'Trade in' ? 'Store credit issued' : 'Store credit redeemed'}</p>
+                  <p className="text-lg font-semibold text-emerald-950">{currency.format(selectedTrade.amount)}</p>
+                </div>
+              </section>
+            )}
           </section>
         </div>
       </div>
