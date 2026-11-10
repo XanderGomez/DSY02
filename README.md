@@ -53,6 +53,16 @@ logout. Trade forms validate inputs only; they do not change balances or save
 transactions. Manager activity is sample data, and manager
 access is unrestricted in this demo.
 
+The manager dashboard groups credit issued, credit redeemed, net credit change,
+and transaction count into summary cards. The Today / Last 7 days selector applies
+to the daily chart, North/Millard store breakdown, recent transactions, and employee
+lookup. Try employee IDs 1042, 1087, or 1124. Click a recent transaction to open its
+receipt; changing the reporting period closes the receipt. These metrics cover
+all stores regardless of the location selected for the staff session. Net change
+is activity within the selected period, not the total outstanding customer balance.
+The seven-day sample uses relative day labels; Saturday and Yesterday belong to
+the same sample day.
+
 For a browser preview, run `npx vite --config vite.renderer.config.ts` and open the
 local URL printed in the terminal. The normal entry point now loads the whole app;
 no temporary preview script is needed. Hash URLs support Electron and browser
@@ -60,3 +70,5 @@ Back/Forward navigation. Unknown URLs or missing customers return to search when
 logged in, and to login otherwise.
 
 Run routing checks with `node --test tests/routes.test.cjs` (Node 24 or newer).
+Run all routing and manager metric checks with `node --test tests/*.test.cjs`
+(add `--experimental-strip-types` when using Node 22).
