@@ -15,20 +15,20 @@ type Trade = {
 };
 
 const trades: Trade[] = [
-  { id: 'TR-2841', kind: 'Trade in', account: 'Maya Thompson', employee: 'Jordan Davis', employeeId: '1042', store: 'North Location', amount: 42.5, time: '10:42 AM', day: 'Today' },
-  { id: 'TR-2840', kind: 'Trade out', account: 'Liam Carter', employee: 'Alex Kim', employeeId: '1087', store: 'Millard Location', amount: 28, time: '10:18 AM', day: 'Today' },
-  { id: 'TR-2839', kind: 'Trade in', account: 'Elena Garcia', employee: 'Jordan Davis', employeeId: '1042', store: 'North Location', amount: 65, time: '9:56 AM', day: 'Today' },
-  { id: 'TR-2838', kind: 'Trade in', account: 'Oliver Reed', employee: 'Morgan Lee', employeeId: '1124', store: 'North Location', amount: 18.75, time: '9:21 AM', day: 'Today' },
-  { id: 'TR-2837', kind: 'Trade out', account: 'Sofia Patel', employee: 'Alex Kim', employeeId: '1087', store: 'Millard Location', amount: 35, time: 'Yesterday', day: 'Yesterday' },
-  { id: 'TR-2836', kind: 'Trade in', account: 'Ethan Brooks', employee: 'Jordan Davis', employeeId: '1042', store: 'North Location', amount: 53.25, time: 'Yesterday', day: 'Yesterday' },
-  { id: 'TR-2835', kind: 'Trade in', account: 'Nora Wilson', employee: 'Morgan Lee', employeeId: '1124', store: 'North Location', amount: 31, time: 'Yesterday', day: 'Yesterday' },
-  { id: 'TR-2834', kind: 'Trade in', account: 'Theo Martin', employee: 'Alex Kim', employeeId: '1087', store: 'Millard Location', amount: 24, time: 'Monday', day: 'Monday' },
-  { id: 'TR-2833', kind: 'Trade out', account: 'Avery Scott', employee: 'Morgan Lee', employeeId: '1124', store: 'North Location', amount: 19.5, time: 'Monday', day: 'Monday' },
-  { id: 'TR-2832', kind: 'Trade in', account: 'Isabel Moore', employee: 'Jordan Davis', employeeId: '1042', store: 'North Location', amount: 46, time: 'Tuesday', day: 'Tuesday' },
-  { id: 'TR-2831', kind: 'Trade in', account: 'Caleb Young', employee: 'Alex Kim', employeeId: '1087', store: 'Millard Location', amount: 37.5, time: 'Wednesday', day: 'Wednesday' },
-  { id: 'TR-2830', kind: 'Trade in', account: 'Zoe Adams', employee: 'Morgan Lee', employeeId: '1124', store: 'North Location', amount: 29, time: 'Thursday', day: 'Thursday' },
-  { id: 'TR-2829', kind: 'Trade in', account: 'Milo Baker', employee: 'Jordan Davis', employeeId: '1042', store: 'North Location', amount: 58, time: 'Friday', day: 'Friday' },
-  { id: 'TR-2828', kind: 'Trade out', account: 'Ruby Evans', employee: 'Alex Kim', employeeId: '1087', store: 'Millard Location', amount: 22, time: 'Saturday', day: 'Saturday' },
+  { id: 'TR-2841', kind: 'Trade in', account: 'Maya Thompson', employee: 'Jordan Davis', employeeId: '1042', store: 'North Location', item: 'The Legend of Zelda: Breath of the Wild', category: 'Video games', amount: 42.5, time: '10:42 AM', day: 'Today' },
+  { id: 'TR-2840', kind: 'Trade out', account: 'Liam Carter', employee: 'Alex Kim', employeeId: '1087', store: 'Millard Location', item: 'Dungeons & Dragons Player’s Handbook', category: 'Books', amount: 28, time: '10:18 AM', day: 'Today' },
+  { id: 'TR-2839', kind: 'Trade in', account: 'Elena Garcia', employee: 'Jordan Davis', employeeId: '1042', store: 'North Location', item: 'Magic: The Gathering card collection', category: 'Trading cards', amount: 65, time: '9:56 AM', day: 'Today' },
+  { id: 'TR-2838', kind: 'Trade in', account: 'Oliver Reed', employee: 'Morgan Lee', employeeId: '1124', store: 'North Location', item: 'Catan board game', category: 'Board games', amount: 18.75, time: '9:21 AM', day: 'Today' },
+  { id: 'TR-2837', kind: 'Trade out', account: 'Sofia Patel', employee: 'Alex Kim', employeeId: '1087', store: 'Millard Location', item: 'Warhammer miniature set', category: 'Miniatures', amount: 35, time: 'Yesterday', day: 'Yesterday' },
+  { id: 'TR-2836', kind: 'Trade in', account: 'Ethan Brooks', employee: 'Jordan Davis', employeeId: '1042', store: 'North Location', item: 'Pokémon card collection', category: 'Trading cards', amount: 53.25, time: 'Yesterday', day: 'Yesterday' },
+  { id: 'TR-2835', kind: 'Trade in', account: 'Nora Wilson', employee: 'Morgan Lee', employeeId: '1124', store: 'North Location', item: 'Ticket to Ride board game', category: 'Board games', amount: 31, time: 'Yesterday', day: 'Yesterday' },
+  { id: 'TR-2834', kind: 'Trade in', account: 'Theo Martin', employee: 'Alex Kim', employeeId: '1087', store: 'Millard Location', item: 'Nintendo Switch game bundle', category: 'Video games', amount: 24, time: 'Monday', day: 'Monday' },
+  { id: 'TR-2833', kind: 'Trade out', account: 'Avery Scott', employee: 'Morgan Lee', employeeId: '1124', store: 'North Location', item: 'Pathfinder core rulebook', category: 'Books', amount: 19.5, time: 'Monday', day: 'Monday' },
+  { id: 'TR-2832', kind: 'Trade in', account: 'Isabel Moore', employee: 'Jordan Davis', employeeId: '1042', store: 'North Location', item: 'Yu-Gi-Oh! card collection', category: 'Trading cards', amount: 46, time: 'Tuesday', day: 'Tuesday' },
+  { id: 'TR-2831', kind: 'Trade in', account: 'Caleb Young', employee: 'Alex Kim', employeeId: '1087', store: 'Millard Location', item: 'Xbox game bundle', category: 'Video games', amount: 37.5, time: 'Wednesday', day: 'Wednesday' },
+  { id: 'TR-2830', kind: 'Trade in', account: 'Zoe Adams', employee: 'Morgan Lee', employeeId: '1124', store: 'North Location', item: 'Carcassonne board game', category: 'Board games', amount: 29, time: 'Thursday', day: 'Thursday' },
+  { id: 'TR-2829', kind: 'Trade in', account: 'Milo Baker', employee: 'Jordan Davis', employeeId: '1042', store: 'North Location', item: 'Dragonlance novel collection', category: 'Books', amount: 58, time: 'Friday', day: 'Friday' },
+  { id: 'TR-2828', kind: 'Trade out', account: 'Ruby Evans', employee: 'Alex Kim', employeeId: '1087', store: 'Millard Location', item: 'Pokémon Elite Trainer Box', category: 'Trading cards', amount: 22, time: 'Saturday', day: 'Saturday' },
 ];
 
 const weekDays: Trade['day'][] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Today'];
@@ -219,10 +219,11 @@ function ManagerPage() {
                 <thead>
                   <tr className="border-b border-emerald-200 text-[10px] font-semibold uppercase tracking-wide text-stone-500">
                     <th className="py-2 pr-3">Transaction</th>
-                    <th className="px-3 py-2">Account</th>
+                    <th className="px-3 py-2">Costumer</th>
                     <th className="px-3 py-2">Employee</th>
                     <th className="px-3 py-2">Store</th>
-                    <th className="px-3 py-2">Amount</th>
+                    <th className="px-3 py-2">Category</th>
+                    <th className="px-3 py-2">Credit</th>
                     <th className="py-2 pl-3">Time</th>
                   </tr>
                 </thead>
@@ -238,8 +239,8 @@ function ManagerPage() {
                         >
                           {trade.id}
                         </button>
-                        <span className={`ml-2 inline-flex items-center gap-1.5 font-medium ${trade.kind === 'Trade in' ? 'text-emerald-800' : 'text-amber-800'}`}>
-                          <span className={`size-1.5 rounded-full ${trade.kind === 'Trade in' ? 'bg-emerald-600' : 'bg-amber-500'}`} />
+                        <span className={`ml-2 inline-flex items-center gap-1.5 font-medium ${trade.kind === 'Trade in' ? 'text-emerald-800' : 'text-red-700'}`}>
+                          <span className={`size-1.5 rounded-full ${trade.kind === 'Trade in' ? 'bg-emerald-600' : 'bg-red-600'}`} />
                           {trade.kind}
                         </span>
                       </td>
@@ -248,7 +249,8 @@ function ManagerPage() {
                         {trade.employee}<span className="ml-1 text-[10px] text-stone-400">#{trade.employeeId}</span>
                       </td>
                       <td className="px-3 py-2 text-stone-600">{trade.store}</td>
-                      <td className="px-3 py-2 font-medium text-stone-800">{currency.format(trade.amount)}</td>
+                      <td className="px-3 py-2 text-stone-600">{trade.category}</td>
+                      <td className={`px-3 py-2 font-medium tabular-nums ${trade.kind === 'Trade in' ? 'text-emerald-800' : 'text-red-700'}`}>{trade.kind === 'Trade in' ? '+' : '−'}{currency.format(trade.amount)}</td>
                       <td className="py-2 pl-3 text-stone-500">{trade.time}</td>
                     </tr>
                   ))}
@@ -295,11 +297,11 @@ function ManagerPage() {
                     <p className="font-medium text-stone-800">{selectedTrade.item}</p>
                     <p className="mt-1 text-xs text-stone-500">{selectedTrade.category}</p>
                   </div>
-                  <p className="shrink-0 font-medium text-stone-800">{currency.format(selectedTrade.amount)}</p>
+                  <p className={`shrink-0 font-medium tabular-nums ${selectedTrade.kind === 'Trade in' ? 'text-emerald-800' : 'text-red-700'}`}>{selectedTrade.kind === 'Trade in' ? '+' : '−'}{currency.format(selectedTrade.amount)}</p>
                 </div>
                 <div className="flex items-baseline justify-between border-t border-emerald-200 pt-3">
                   <p className="text-sm font-semibold text-stone-800">{selectedTrade.kind === 'Trade in' ? 'Store credit issued' : 'Store credit redeemed'}</p>
-                  <p className="text-lg font-semibold text-emerald-950">{currency.format(selectedTrade.amount)}</p>
+                  <p className={`text-lg font-semibold tabular-nums ${selectedTrade.kind === 'Trade in' ? 'text-emerald-800' : 'text-red-700'}`}>{selectedTrade.kind === 'Trade in' ? '+' : '−'}{currency.format(selectedTrade.amount)}</p>
                 </div>
               </section>
             )}

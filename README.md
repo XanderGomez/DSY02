@@ -53,6 +53,11 @@ logout. Trade forms validate inputs only; they do not change balances or save
 transactions. Manager activity is sample data, and manager
 access is unrestricted in this demo.
 
+The manager dashboard keeps its compact summary, daily trade-in chart, employee
+lookup, and recent transactions. The Credit column shows additions in green with
+`+` and deductions in red with `−`; transaction receipts use the same convention.
+Click a transaction to view its receipt.
+
 For a browser preview, run `npx vite --config vite.renderer.config.ts` and open the
 local URL printed in the terminal. The normal entry point now loads the whole app;
 no temporary preview script is needed. Hash URLs support Electron and browser
