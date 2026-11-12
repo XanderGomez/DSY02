@@ -2,6 +2,9 @@
 
 A web based desktop application developed as a senior capstone project for Dragon's Lair.
 
+See [Functional requirements](requirements.md) for feature descriptions, acceptance
+criteria, current implementation status, and open decisions.
+
 ## Project Overview
 
 The system will allow employees to:
