@@ -65,3 +65,41 @@ Back/Forward navigation. Unknown URLs or missing customers return to search when
 logged in, and to login otherwise.
 
 Run routing checks with `node --test tests/routes.test.cjs` (Node 24 or newer).
+
+### Manager analytics
+
+Choose **Explore analytics** on the manager page (`#/manager/analytics`). Date,
+store, employee, trade type, and category filters apply to every metric, chart,
+and receipt list. Select a breakdown bar to filter its transactions, then select
+an ID to open the same receipt component used by the manager overview.
+
+The analytics view uses the shared demo ledger in `src/transactions.ts`, with an
+explicit November 4–12, 2026 demo date mapping in `src/analytics.ts`. This branch
+has no persisted transaction history or backend integration; replace the shared
+ledger and demo dates with recorded transactions when that integration is ready.
+Customer counts use distinct sample names until stable customer IDs are available.
+
+Metrics include credit issued, credit redeemed, net credit movement, transaction
+count, average transaction value, and customers served. Daily movement and
+category/store/employee breakdowns help trace aggregate amounts back to receipts.
+Combined activity sums the absolute credit amounts in both directions. Net credit
+movement is issued minus redeemed, not profit or the outstanding credit balance.
+A starting balance is required to calculate outstanding credit; inventory costs
+and sales data are required for profitability metrics.
+
+Metric research: Shopify's [analytics overview](https://help.shopify.com/en/manual/reports-and-analytics/shopify-reports/overview-dashboard/using-the-overview-dashboard)
+tracks volume and average order value, and its [retail reports](https://help.shopify.com/en/manual/reports-and-analytics/shopify-reports/report-types/default-reports/retail-sales-reports)
+break activity down by product and staff. These reporting patterns are adapted to
+store credit here, rather than treating credit issuance as sales revenue.
+
+Validation: `npm run typecheck` and `node --test tests/*.test.cjs`.
+
+### Transaction history
+
+The bottom of the manager page links to **View all transaction history**
+(`#/manager/history`). The history shows all shared demo records and filters
+immediately by a full or partial POS transaction number. Select a transaction ID
+to open its receipt, which now includes the POS reference. Example demo POS
+number: `102841`. POS references are stored as strings to preserve leading zeros.
+Both trade forms require a POS transaction ID. Forms still validate only and do
+not save new records; history will need the persisted ledger when saving is added.

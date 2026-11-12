@@ -1,35 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 
-type Trade = {
-  id: string;
-  kind: 'Trade in' | 'Trade out';
-  account: string;
-  employee: string;
-  employeeId: string;
-  store: string;
-  item: string;
-  category: string;
-  amount: number;
-  time: string;
-  day: 'Today' | 'Yesterday' | 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday';
-};
-
-const trades: Trade[] = [
-  { id: 'TR-2841', kind: 'Trade in', account: 'Maya Thompson', employee: 'Jordan Davis', employeeId: '1042', store: 'North Location', item: 'The Legend of Zelda: Breath of the Wild', category: 'Video games', amount: 42.5, time: '10:42 AM', day: 'Today' },
-  { id: 'TR-2840', kind: 'Trade out', account: 'Liam Carter', employee: 'Alex Kim', employeeId: '1087', store: 'Millard Location', item: 'Dungeons & Dragons Player’s Handbook', category: 'Books', amount: 28, time: '10:18 AM', day: 'Today' },
-  { id: 'TR-2839', kind: 'Trade in', account: 'Elena Garcia', employee: 'Jordan Davis', employeeId: '1042', store: 'North Location', item: 'Magic: The Gathering card collection', category: 'Trading cards', amount: 65, time: '9:56 AM', day: 'Today' },
-  { id: 'TR-2838', kind: 'Trade in', account: 'Oliver Reed', employee: 'Morgan Lee', employeeId: '1124', store: 'North Location', item: 'Catan board game', category: 'Board games', amount: 18.75, time: '9:21 AM', day: 'Today' },
-  { id: 'TR-2837', kind: 'Trade out', account: 'Sofia Patel', employee: 'Alex Kim', employeeId: '1087', store: 'Millard Location', item: 'Warhammer miniature set', category: 'Miniatures', amount: 35, time: 'Yesterday', day: 'Yesterday' },
-  { id: 'TR-2836', kind: 'Trade in', account: 'Ethan Brooks', employee: 'Jordan Davis', employeeId: '1042', store: 'North Location', item: 'Pokémon card collection', category: 'Trading cards', amount: 53.25, time: 'Yesterday', day: 'Yesterday' },
-  { id: 'TR-2835', kind: 'Trade in', account: 'Nora Wilson', employee: 'Morgan Lee', employeeId: '1124', store: 'North Location', item: 'Ticket to Ride board game', category: 'Board games', amount: 31, time: 'Yesterday', day: 'Yesterday' },
-  { id: 'TR-2834', kind: 'Trade in', account: 'Theo Martin', employee: 'Alex Kim', employeeId: '1087', store: 'Millard Location', item: 'Nintendo Switch game bundle', category: 'Video games', amount: 24, time: 'Monday', day: 'Monday' },
-  { id: 'TR-2833', kind: 'Trade out', account: 'Avery Scott', employee: 'Morgan Lee', employeeId: '1124', store: 'North Location', item: 'Pathfinder core rulebook', category: 'Books', amount: 19.5, time: 'Monday', day: 'Monday' },
-  { id: 'TR-2832', kind: 'Trade in', account: 'Isabel Moore', employee: 'Jordan Davis', employeeId: '1042', store: 'North Location', item: 'Yu-Gi-Oh! card collection', category: 'Trading cards', amount: 46, time: 'Tuesday', day: 'Tuesday' },
-  { id: 'TR-2831', kind: 'Trade in', account: 'Caleb Young', employee: 'Alex Kim', employeeId: '1087', store: 'Millard Location', item: 'Xbox game bundle', category: 'Video games', amount: 37.5, time: 'Wednesday', day: 'Wednesday' },
-  { id: 'TR-2830', kind: 'Trade in', account: 'Zoe Adams', employee: 'Morgan Lee', employeeId: '1124', store: 'North Location', item: 'Carcassonne board game', category: 'Board games', amount: 29, time: 'Thursday', day: 'Thursday' },
-  { id: 'TR-2829', kind: 'Trade in', account: 'Milo Baker', employee: 'Jordan Davis', employeeId: '1042', store: 'North Location', item: 'Dragonlance novel collection', category: 'Books', amount: 58, time: 'Friday', day: 'Friday' },
-  { id: 'TR-2828', kind: 'Trade out', account: 'Ruby Evans', employee: 'Alex Kim', employeeId: '1087', store: 'Millard Location', item: 'Pokémon Elite Trainer Box', category: 'Trading cards', amount: 22, time: 'Saturday', day: 'Saturday' },
-];
+import { trades, type Trade } from './transactions';
+import TransactionReceipt from './TransactionReceipt';
 
 const weekDays: Trade['day'][] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Today'];
 const currency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
@@ -74,18 +46,14 @@ function ManagerPage() {
   }));
   const highestDailyTotal = Math.max(...dailyTotals.map(({ total }) => total), 1);
 
-  const employeeTradeIns = useMemo(
-    () => employeeId
-      ? trades.filter((trade) => trade.employeeId === employeeId && trade.kind === 'Trade in')
-      : [],
-    [employeeId],
-  );
-  const employeeName = employeeTradeIns[0]?.employee;
-  const employeeTotal = employeeTradeIns.reduce((total, trade) => total + trade.amount, 0);
+  const employeeTransactions = employeeId ? trades.filter((trade) => trade.employeeId === employeeId) : [];
+  const visibleTransactions = employeeId ? employeeTransactions : trades.slice(0, 5);
+  const employeeName = employeeTransactions[0]?.employee;
 
   function searchEmployee(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setEmployeeId(employeeIdInput.trim());
+    setSelectedTrade(null);
   }
 
   return (
@@ -96,6 +64,7 @@ function ManagerPage() {
           <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-emerald-800">Manager</p>
+              <a href="#/manager/analytics" className="float-right rounded-lg bg-emerald-800 px-4 py-2 text-sm text-white">Explore analytics →</a>
               <h1 className="mt-1 text-xl font-semibold tracking-tight text-emerald-950 sm:text-2xl">Trade activity</h1>
               <p className="mt-1 text-xs text-stone-500">Sample activity for demonstration.</p>
             </div>
@@ -132,7 +101,7 @@ function ManagerPage() {
             />
           </section>
 
-          <section className="mt-4 grid gap-5 min-[600px]:grid-cols-[1.1fr_0.9fr]">
+          <section className="mt-4">
             <article className="min-w-0">
               <div className="flex items-center justify-between gap-3">
                 <div>
@@ -159,11 +128,12 @@ function ManagerPage() {
               </div>
             </article>
 
-            <article className="min-w-0 border-t border-emerald-200 pt-3 min-[600px]:border-l min-[600px]:border-t-0 min-[600px]:pl-5 min-[600px]:pt-0">
-              <div>
-                <h2 className="text-sm font-semibold text-emerald-950">Employee activity</h2>
-                <p className="mt-0.5 text-[11px] text-stone-500">Find trade-ins by employee ID</p>
-              </div>
+
+          </section>
+
+          <section aria-labelledby="employee-search-title" className="mt-4 rounded-lg border border-emerald-200 bg-white p-4">
+            <h2 id="employee-search-title" className="text-sm font-semibold text-emerald-950">Search transactions by employee</h2>
+            <p className="mt-1 text-xs text-stone-500">Enter an employee ID to filter the transactions below.</p>
               <form className="mt-2 flex gap-2" onSubmit={searchEmployee}>
                 <label className="sr-only" htmlFor="employee-id">Employee ID</label>
                 <input
@@ -180,46 +150,27 @@ function ManagerPage() {
                 >
                   View
                 </button>
+                <button
+                  className="rounded-md border border-emerald-200 px-3 text-xs font-medium text-emerald-800 hover:bg-emerald-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-800"
+                  type="button"
+                  onClick={() => { setEmployeeIdInput(''); setEmployeeId(''); setSelectedTrade(null); }}
+                >
+                  Clear
+                </button>
               </form>
-              {employeeId && (
-                <div aria-live="polite" className="mt-3 border-t border-emerald-200 pt-2">
-                  {employeeTradeIns.length ? (
-                    <>
-                      <div className="flex items-baseline justify-between gap-2">
-                        <div>
-                          <p className="text-xs font-semibold text-stone-900">{employeeName}</p>
-                          <p className="text-[10px] text-stone-500">ID {employeeId}</p>
-                        </div>
-                        <p className="text-xs font-semibold text-emerald-800">{currency.format(employeeTotal)}</p>
-                      </div>
-                      <ul className="mt-1 max-h-24 divide-y divide-emerald-100 overflow-y-auto">
-                        {employeeTradeIns.map((trade) => (
-                          <li className="flex items-center justify-between gap-3 py-1 text-[11px]" key={trade.id}>
-                            <span className="min-w-0 truncate text-stone-700">{trade.account} <span className="text-stone-400">· {trade.store}</span></span>
-                            <span className="shrink-0 font-medium text-emerald-800">{currency.format(trade.amount)}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </>
-                  ) : (
-                    <p className="text-xs text-stone-600">No trade-ins found for employee ID {employeeId}.</p>
-                  )}
-                </div>
-              )}
-            </article>
           </section>
 
           <section className="mt-4 border-t border-emerald-200 pt-3">
             <div className="mb-2 flex items-baseline justify-between gap-3">
-              <h2 className="text-sm font-semibold text-emerald-950">Recent transactions</h2>
-              <span className="text-[11px] text-stone-500">Latest 5</span>
+              <h2 className="text-sm font-semibold text-emerald-950">{employeeId ? `Transactions for ${employeeName || 'employee'} · #${employeeId}` : 'Recent transactions'}</h2>
+              <span aria-live="polite" className="text-[11px] text-stone-500">{employeeId ? `${visibleTransactions.length} transactions` : 'Latest 5'}</span>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full min-w-[680px] border-collapse text-left">
                 <thead>
                   <tr className="border-b border-emerald-200 text-[10px] font-semibold uppercase tracking-wide text-stone-500">
                     <th className="py-2 pr-3">Transaction</th>
-                    <th className="px-3 py-2">Costumer</th>
+                    <th className="px-3 py-2">Customer</th>
                     <th className="px-3 py-2">Employee</th>
                     <th className="px-3 py-2">Store</th>
                     <th className="px-3 py-2">Category</th>
@@ -228,7 +179,10 @@ function ManagerPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-emerald-100">
-                  {trades.slice(0, 5).map((trade) => (
+                  {employeeId && !visibleTransactions.length && (
+                    <tr><td colSpan={7} className="py-5 text-center text-sm text-stone-600">No transactions found for employee ID {employeeId}.</td></tr>
+                  )}
+                  {visibleTransactions.map((trade) => (
                     <tr className="cursor-pointer text-xs hover:bg-emerald-50/60" key={trade.id} onClick={() => setSelectedTrade(trade)}>
                       <td className="py-2 pr-3">
                         <button
@@ -258,54 +212,12 @@ function ManagerPage() {
               </table>
             </div>
             {selectedTrade && (
-              <section aria-labelledby="transaction-receipt-title" className="mx-auto mt-5 max-w-xl rounded-lg border border-emerald-200 bg-white p-5 shadow-sm" aria-live="polite">
-                <div className="flex items-start justify-between gap-4 border-b border-dashed border-emerald-200 pb-4">
-                  <div>
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-emerald-800">Transaction receipt</p>
-                    <h3 className="mt-1 text-lg font-semibold text-emerald-950" id="transaction-receipt-title">{selectedTrade.id}</h3>
-                    <p className="mt-1 text-xs text-stone-500">{selectedTrade.day} · {selectedTrade.time}</p>
-                  </div>
-                  <button
-                    aria-label="Close transaction receipt"
-                    className="rounded-md px-2 py-1 text-sm text-stone-600 hover:bg-emerald-50 focus-visible:outline-2 focus-visible:outline-emerald-800"
-                    onClick={() => setSelectedTrade(null)}
-                    type="button"
-                  >
-                    Close
-                  </button>
-                </div>
-                <dl className="grid grid-cols-2 gap-x-4 gap-y-3 border-b border-dashed border-emerald-200 py-4 text-sm">
-                  <div>
-                    <dt className="text-xs text-stone-500">Transaction type</dt>
-                    <dd className="mt-1 font-medium text-stone-800">{selectedTrade.kind}</dd>
-                  </div>
-                  <div>
-                    <dt className="text-xs text-stone-500">Customer account</dt>
-                    <dd className="mt-1 font-medium text-stone-800">{selectedTrade.account}</dd>
-                  </div>
-                  <div>
-                    <dt className="text-xs text-stone-500">Employee</dt>
-                    <dd className="mt-1 font-medium text-stone-800">{selectedTrade.employee} · #{selectedTrade.employeeId}</dd>
-                  </div>
-                  <div>
-                    <dt className="text-xs text-stone-500">Store</dt>
-                    <dd className="mt-1 font-medium text-stone-800">{selectedTrade.store}</dd>
-                  </div>
-                </dl>
-                <div className="flex items-start justify-between gap-4 py-4 text-sm">
-                  <div>
-                    <p className="font-medium text-stone-800">{selectedTrade.item}</p>
-                    <p className="mt-1 text-xs text-stone-500">{selectedTrade.category}</p>
-                  </div>
-                  <p className={`shrink-0 font-medium tabular-nums ${selectedTrade.kind === 'Trade in' ? 'text-emerald-800' : 'text-red-700'}`}>{selectedTrade.kind === 'Trade in' ? '+' : '−'}{currency.format(selectedTrade.amount)}</p>
-                </div>
-                <div className="flex items-baseline justify-between border-t border-emerald-200 pt-3">
-                  <p className="text-sm font-semibold text-stone-800">{selectedTrade.kind === 'Trade in' ? 'Store credit issued' : 'Store credit redeemed'}</p>
-                  <p className={`text-lg font-semibold tabular-nums ${selectedTrade.kind === 'Trade in' ? 'text-emerald-800' : 'text-red-700'}`}>{selectedTrade.kind === 'Trade in' ? '+' : '−'}{currency.format(selectedTrade.amount)}</p>
-                </div>
-              </section>
+              <TransactionReceipt selectedTrade={selectedTrade} onClose={() => setSelectedTrade(null)} />
             )}
           </section>
+          <div className="mt-5 flex justify-center border-t border-emerald-200 pt-5">
+            <a href="#/manager/history" className="rounded-lg bg-emerald-800 px-5 py-3 text-sm font-medium text-white hover:bg-emerald-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-800">View all transaction history →</a>
+          </div>
         </div>
       </div>
     </main>

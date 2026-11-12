@@ -4,7 +4,7 @@ const { backDestination, parseRoute, routePath } = require('../src/routes.ts');
 
 test('all pages round-trip through hash URLs', () => {
   const routes = [
-    { page: 'store' }, { page: 'login' }, { page: 'search' }, { page: 'manager' },
+    { page: 'store' }, { page: 'login' }, { page: 'search' }, { page: 'manager' }, { page: 'analytics' }, { page: 'history' },
     { page: 'account', customerId: 1 },
     { page: 'trade-in', customerId: 2 },
     { page: 'trade-out', customerId: 3 },
@@ -36,4 +36,13 @@ test('invalid routes cannot select a customer or trade page', () => {
   for (const hash of ['#/missing', '#/customers/abc', '#/customers/-1', '#/customers/1/delete', '#/customers/1/trade-in/extra', '#/customers/9007199254740992']) {
     assert.equal(parseRoute(hash), null);
   }
+});
+
+test('analytics returns to the manager overview', () => {
+  assert.deepEqual(backDestination({ page: 'analytics' }), { route: { page: 'manager' }, label: 'Back to manager' });
+});
+
+test('transaction history returns to the manager', () => {
+  assert.deepEqual(parseRoute('#/manager/history'), { page: 'history' });
+  assert.deepEqual(backDestination({ page: 'history' }).route, { page: 'manager' });
 });
