@@ -3,6 +3,8 @@ import App from './App';
 import AppHeader from './AppHeader';
 import CustomerAccount, { type CustomerAccountDetails } from './CustomerAccount';
 import Login from './Login';
+import TransactionHistory from './TransactionHistory';
+import ManagerAnalytics from './ManagerAnalytics';
 import ManagerPage from './ManagerPage';
 import TradeInPage from './TradeInPage';
 import TradeOutPage from './TradeOutPage';
@@ -51,7 +53,7 @@ export default function AppRouter() {
       window.history.replaceState(null, '', `#${path}`);
       setHash(`#${path}`);
     }
-    const titles = { store: 'Choose your store', login: 'Staff login', search: 'Find a customer', manager: 'Trade activity', account: 'Customer account', 'trade-in': 'Trade in', 'trade-out': 'Trade out' };
+    const titles = { store: 'Choose your store', login: 'Staff login', search: 'Find a customer', manager: 'Trade activity', analytics: 'Trade analytics', history: 'Transaction history', account: 'Customer account', 'trade-in': 'Trade in', 'trade-out': 'Trade out' };
     document.title = `${titles[route.page]} | Dragon's Lair`;
     window.scrollTo(0, 0);
     const heading = document.querySelector('h1');
@@ -66,6 +68,10 @@ export default function AppRouter() {
     content = <StoreSelection onSelect={(location) => { setStore(location); navigate({ page: 'login' }); }} />;
   } else if (route.page === 'login') {
     content = <Login onLogin={(staff) => { setEmployee(staff); backToSearch(); }} />;
+  } else if (route.page === 'history') {
+    content = <TransactionHistory />;
+  } else if (route.page === 'analytics') {
+    content = <ManagerAnalytics />;
   } else if (route.page === 'manager') {
     content = <ManagerPage />;
   } else if (selectedCustomer && 'customerId' in route) {
@@ -86,7 +92,7 @@ export default function AppRouter() {
   }
   return (
     <div className="min-h-screen bg-[#e6f0e5] text-stone-900">
-      <AppHeader store={store} employee={employee} isManagerPage={route.page === 'manager'}
+      <AppHeader store={store} employee={employee} isManagerPage={route.page === 'manager' || route.page === 'analytics' || route.page === 'history'}
         backLabel={back?.label}
         onBack={back ? () => {
           if (back.route.page === 'store') setStore(null);

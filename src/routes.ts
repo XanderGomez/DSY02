@@ -1,5 +1,5 @@
 export type Route =
-  | { page: 'store' | 'login' | 'search' | 'manager' }
+  | { page: 'store' | 'login' | 'search' | 'manager' | 'analytics' | 'history' }
   | { page: 'account' | 'trade-in' | 'trade-out'; customerId: number };
 
 export function parseRoute(hash: string): Route | null {
@@ -7,6 +7,8 @@ export function parseRoute(hash: string): Route | null {
   if (path === '/store') return { page: 'store' };
   if (path === '/login') return { page: 'login' };
   if (path === '/search') return { page: 'search' };
+  if (path === '/manager/history') return { page: 'history' };
+  if (path === '/manager/analytics') return { page: 'analytics' };
   if (path === '/manager') return { page: 'manager' };
   const match = /^\/customers\/(\d+)(?:\/(trade-in|trade-out))?$/.exec(path);
   if (!match || !Number.isSafeInteger(Number(match[1]))) return null;
@@ -15,6 +17,7 @@ export function parseRoute(hash: string): Route | null {
 
 // Explicit destinations keep Back inside the current session, including deep links.
 export function backDestination(route: Route): { route: Route; label: string } | null {
+  if (route.page === 'analytics' || route.page === 'history') return { route: { page: 'manager' }, label: 'Back to manager' };
   if (route.page === 'login') return { route: { page: 'store' }, label: 'Back to store selection' };
   if (route.page === 'trade-in' || route.page === 'trade-out') {
     return { route: { page: 'account', customerId: route.customerId }, label: 'Back to customer account' };
@@ -26,6 +29,8 @@ export function backDestination(route: Route): { route: Route; label: string } |
 }
 
 export function routePath(route: Route): string {
+  if (route.page === 'history') return '/manager/history';
+  if (route.page === 'analytics') return '/manager/analytics';
   if ('customerId' in route) {
     return `/customers/${route.customerId}${route.page === 'account' ? '' : `/${route.page}`}`;
   }

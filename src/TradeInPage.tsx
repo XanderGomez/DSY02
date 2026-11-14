@@ -18,6 +18,7 @@ export default function TradeInPage({ customer, categoryTradeCounts }: TradePage
   const [itemName, setItemName] = useState('');
   const [description, setDescription] = useState('');
   const [amount, setAmount] = useState('');
+  const [posTransactionId, setPosTransactionId] = useState('');
   const [error, setError] = useState('');
   const [reviewed, setReviewed] = useState(false);
   function clearSelection() {
@@ -30,6 +31,10 @@ export default function TradeInPage({ customer, categoryTradeCounts }: TradePage
     setReviewed(false);
     if (!category || !itemName.trim()) {
       setError('Choose a category and enter the item name.');
+      return;
+    }
+    if (!posTransactionId.trim()) {
+      setError('Enter the related POS transaction ID.');
       return;
     }
     const value = amount.trim();
@@ -54,6 +59,7 @@ export default function TradeInPage({ customer, categoryTradeCounts }: TradePage
     setItemName('');
     setDescription('');
     setAmount('');
+    setPosTransactionId('');
     clearSelection();
   }
 
@@ -85,6 +91,9 @@ export default function TradeInPage({ customer, categoryTradeCounts }: TradePage
           <label className="mt-5 block text-sm font-medium text-emerald-950" htmlFor="trade-in-credit-amount">Store credit offered (USD) <span className="text-red-700">*</span></label>
           <input id="trade-in-credit-amount" className={`${fieldClass} max-w-xs`} type="text" inputMode="decimal" required placeholder="0.00" aria-describedby="trade-in-credit-amount-help" value={amount} onChange={(event) => { setAmount(event.target.value); clearSelection(); }} />
           <p id="trade-in-credit-amount-help" className="mt-2 text-xs text-stone-600">Enter the employee-determined store credit for accepting this item, in dollars and cents.</p>
+          <label className="mt-5 block text-sm font-medium text-emerald-950" htmlFor="trade-in-pos-transaction-id">POS transaction ID <span className="text-red-700">*</span></label>
+          <input id="trade-in-pos-transaction-id" name="posTransactionId" className={fieldClass} type="text" required maxLength={200} placeholder="Enter the related POS transaction ID" aria-describedby="trade-in-pos-transaction-id-help" value={posTransactionId} onChange={(event) => { setPosTransactionId(event.target.value); clearSelection(); }} />
+          <p id="trade-in-pos-transaction-id-help" className="mt-2 text-xs text-stone-600">Reference the POS transaction associated with this trade in.</p>
           {error && <p className="mt-4 text-sm text-red-700" role="alert">{error}</p>}
           {reviewed && <p className="mt-4 rounded-md border border-emerald-200 bg-emerald-100 p-3 text-sm text-emerald-950" role="status">Form checked. The trade-in details are valid. This preview does not save trades or issue credit.</p>}
           <div className="mt-6 flex flex-wrap justify-end gap-3 border-t border-emerald-200 pt-5">
