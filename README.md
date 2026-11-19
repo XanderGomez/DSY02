@@ -39,8 +39,9 @@ both locations; selecting a store does not filter employee accounts.
 Search for Olivia, Noah, or Ava, or create an account. Selecting a customer opens their credit balance,
 with links to trade in and trade out. Each trade page returns to that same account.
 The shared sticky header shows the selected store and employee on every page,
-with Manager and Log out available throughout the logged-in session. Back is
-always below the store banner: trades return to their customer, accounts and the
+with Manager and Log out available throughout the logged-in session. The inset
+store banner has rounded bottom corners, Back on the left, the store centered,
+and the employee on the right. Trades return to their customer, accounts and the
 manager dashboard return to search. Each button says "Back to" followed by its
 destination. Search and initial store selection have no Back button because they
 are starting points. Login's Back returns to store selection.
