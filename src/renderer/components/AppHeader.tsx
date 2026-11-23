@@ -1,4 +1,4 @@
-import type { Employee, StoreLocation } from './session';
+import type { Employee, StoreLocation } from '../features/session/session';
 
 type AppHeaderProps = {
   store: StoreLocation | null;

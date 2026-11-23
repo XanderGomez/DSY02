@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { searchTransactions, trades, type Trade } from './transactions';
-import { transactionDate } from './analytics';
+import { transactionDate } from '../manager/analytics';
 import TransactionReceipt from './TransactionReceipt';
 
 const currency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });

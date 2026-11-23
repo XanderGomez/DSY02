@@ -1,4 +1,4 @@
-import type { CustomerAccountDetails } from './CustomerAccount';
+import type { CustomerAccountDetails } from '../customers/CustomerAccount';
 
 export type TradePageProps = {
   customer?: CustomerAccountDetails;

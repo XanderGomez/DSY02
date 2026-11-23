@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-import { trades, type Trade } from './transactions';
-import TransactionReceipt from './TransactionReceipt';
+import { trades, type Trade } from '../transactions/transactions';
+import TransactionReceipt from '../transactions/TransactionReceipt';
 
 const weekDays: Trade['day'][] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Today'];
 const currency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });

@@ -21,18 +21,63 @@ Managers will additionally be able to view analytics related to:
 
 ## Development
 
-Install the dependencies recorded in the lockfile with `npm ci`, then start the
+Use Node.js 24 or newer. Install the dependencies recorded in the lockfile with `npm ci`, then start the
 application with `npm start`.
 
 Run `npm run typecheck` to check TypeScript without generating files, and
-`npm run lint` to check code style.
+`npm run lint` to check code style. Run `npm test` for the routing, analytics,
+and transaction history tests. Use `npm run package` to build the desktop app.
+
+## Repository structure
+
+```text
+config/                      Vite configurations for Electron and React
+docs/backend/                Backend structure and unconfirmed requirements
+src/
+  backend/                   Future backend (directory scaffold only)
+    api/routes/              API endpoint handlers
+    domain/models/           Domain records and relationships
+    domain/rules/            Business validation and calculations
+    services/                Application workflows
+    storage/interfaces/      Storage contracts
+    storage/memory/          Initial in-memory storage implementations
+  main/                      Electron app lifecycle and window creation
+  preload/                   Electron preload entry point
+  renderer/
+    app/                     Application routing and session orchestration
+    components/              Shared application UI
+    features/
+      customers/             Customer search, creation, and account view
+      manager/               Manager overview and analytics
+      session/               Store selection, staff login, and demo staff
+      trades/                Trade-in/out forms and category helpers
+      transactions/          Demo ledger, transaction history, and receipts
+    styles/                  Global styles and Tailwind entry point
+    main.tsx                 React entry point
+  shared/contracts/          Future frontend/backend request and response contracts
+tests/                       Node.js tests for application logic
+  backend/                   Future backend tests
+    unit/                    Domain rules and service tests
+    integration/             API, service, and storage integration tests
+    fixtures/                Reusable test data
+```
+
+Keep feature-specific components, data, and helpers together. Put UI shared across
+features in `src/renderer/components`. Electron Forge, TypeScript, ESLint, and
+the HTML entry point retain their conventional root locations. Generated output
+(`.vite/`, `dist/`, and `out/`) and dependencies (`node_modules/`) are ignored.
+
+The backend and shared contract directories contain placeholders only. See the
+[backend structure guide](docs/backend/README.md) for responsibilities, dependency
+boundaries, and decisions awaiting sponsor confirmation. Hosting and database
+choices remain open; no backend functionality is wired into the app yet.
 
 ## Frontend demo
 
 The app starts with manual store selection, followed by staff login. Select a demo
 employee and enter any nonempty numeric PIN to open customer search; this is demo
 navigation, not authentication. Store colors and demo staff are configured in
-`src/session.ts` (North Location (Main): blue, Millard Location: purple). Locations
+`src/renderer/features/session/session.ts` (North Location (Main): blue, Millard Location: purple). Locations
 use sponsor-provided contact details; colors are provisional and employee accounts
 are placeholders pending backend authentication. All employees are available at
 both locations; selecting a store does not filter employee accounts.
@@ -59,13 +104,13 @@ lookup, and recent transactions. The Credit column shows additions in green with
 `+` and deductions in red with `−`; transaction receipts use the same convention.
 Click a transaction to view its receipt.
 
-For a browser preview, run `npx vite --config vite.renderer.config.ts` and open the
-local URL printed in the terminal. The normal entry point now loads the whole app;
-no temporary preview script is needed. Hash URLs support Electron and browser
+For a browser preview, run `npm run preview` and open the local URL printed in the
+terminal. This uses the same entry point as the desktop app; the old standalone
+login and manager preview files have been removed. Hash URLs support Electron and browser
 Back/Forward navigation. Unknown URLs or missing customers return to search when
 logged in, and to login otherwise.
 
-Run routing checks with `node --test tests/routes.test.cjs` (Node 24 or newer).
+Run just the routing checks with `node --test tests/routes.test.cjs`.
 
 ### Manager analytics
 
@@ -74,8 +119,8 @@ store, employee, trade type, and category filters apply to every metric, chart,
 and receipt list. Select a breakdown bar to filter its transactions, then select
 an ID to open the same receipt component used by the manager overview.
 
-The analytics view uses the shared demo ledger in `src/transactions.ts`, with an
-explicit November 4–12, 2026 demo date mapping in `src/analytics.ts`. This branch
+The analytics view uses the shared demo ledger in `src/renderer/features/transactions/transactions.ts`, with an
+explicit November 4–12, 2026 demo date mapping in `src/renderer/features/manager/analytics.ts`. This branch
 has no persisted transaction history or backend integration; replace the shared
 ledger and demo dates with recorded transactions when that integration is ready.
 Customer counts use distinct sample names until stable customer IDs are available.
@@ -93,7 +138,7 @@ tracks volume and average order value, and its [retail reports](https://help.sho
 break activity down by product and staff. These reporting patterns are adapted to
 store credit here, rather than treating credit issuance as sales revenue.
 
-Validation: `npm run typecheck` and `node --test tests/*.test.cjs`.
+Validation: `npm run typecheck`, `npm run lint`, and `npm test`.
 
 ### Transaction history
 

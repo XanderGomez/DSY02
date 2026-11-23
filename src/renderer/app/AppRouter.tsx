@@ -1,16 +1,16 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import App from './App';
-import AppHeader from './AppHeader';
-import CustomerAccount, { type CustomerAccountDetails } from './CustomerAccount';
-import Login from './Login';
-import TransactionHistory from './TransactionHistory';
-import ManagerAnalytics from './ManagerAnalytics';
-import ManagerPage from './ManagerPage';
-import TradeInPage from './TradeInPage';
-import TradeOutPage from './TradeOutPage';
-import StoreSelection from './StoreSelection';
+import CustomerSearch from '../features/customers/CustomerSearch';
+import AppHeader from '../components/AppHeader';
+import CustomerAccount, { type CustomerAccountDetails } from '../features/customers/CustomerAccount';
+import Login from '../features/session/Login';
+import TransactionHistory from '../features/transactions/TransactionHistory';
+import ManagerAnalytics from '../features/manager/ManagerAnalytics';
+import ManagerPage from '../features/manager/ManagerPage';
+import TradeInPage from '../features/trades/TradeInPage';
+import TradeOutPage from '../features/trades/TradeOutPage';
+import StoreSelection from '../features/session/StoreSelection';
 import { backDestination, parseRoute, routePath, type Route } from './routes';
-import type { Employee, StoreLocation } from './session';
+import type { Employee, StoreLocation } from '../features/session/session';
 
 const demoCustomers: CustomerAccountDetails[] = [
   { id: 1, name: 'Olivia Bennett', email: 'olivia.bennett@email.com', phone: '(402) 555-0142', creditBalance: 125.5 },
@@ -83,7 +83,7 @@ export default function AppRouter() {
         onTradeOut={() => navigate({ page: 'trade-out', customerId: selectedCustomer.id })} />
     );
   } else {
-    content = <App customers={customers} query={query} onQueryChange={setQuery}
+    content = <CustomerSearch customers={customers} query={query} onQueryChange={setQuery}
       onSelectCustomer={(customer) => navigate({ page: 'account', customerId: customer.id })}
       onCreateCustomer={(customer) => {
         setCustomers((current) => [customer, ...current]);
