@@ -25,8 +25,12 @@ Use Node.js 24 or newer. Install the dependencies recorded in the lockfile with 
 application with `npm start`.
 
 Run `npm run typecheck` to check TypeScript without generating files, and
-`npm run lint` to check code style. Run `npm test` for the routing, analytics,
+`npm run lint` to check for common code problems. Run `npm test` for the routing, analytics,
 and transaction history tests. Use `npm run package` to build the desktop app.
+
+Use `npm run lint:fix` to apply available automatic lint fixes, then review the diff.
+See [linting and code checks](docs/development/linting.md) for what each check does,
+how ESLint is configured, and why the lint tools use TypeScript 6.0.
 
 ## Repository structure
 
