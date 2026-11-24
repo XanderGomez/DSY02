@@ -1,9 +1,8 @@
 import { useState } from 'react';
 
-import { trades, type Trade } from '../transactions/transactions';
+import { localDate, type Trade } from '../transactions/transactions';
 import TransactionReceipt from '../transactions/TransactionReceipt';
 
-const weekDays: Trade['day'][] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Today'];
 const currency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
 
 function StatCard({
@@ -26,23 +25,24 @@ function StatCard({
   );
 }
 
-function ManagerPage() {
-  const [period, setPeriod] = useState<'Today' | 'This week'>('Today');
+function ManagerPage({ trades }: { trades: Trade[] }) {
+  const [period, setPeriod] = useState<'Today' | 'Last 7 days'>('Today');
   const [employeeIdInput, setEmployeeIdInput] = useState('');
   const [employeeId, setEmployeeId] = useState('');
   const [selectedTrade, setSelectedTrade] = useState<Trade | null>(null);
 
-  const todayTradeIns = trades.filter((trade) => trade.kind === 'Trade in' && trade.day === 'Today');
-  const weeklyTradeIns = trades.filter((trade) => trade.kind === 'Trade in');
-  const periodTradeIns = period === 'Today' ? todayTradeIns : weeklyTradeIns;
+  const today = new Date();
+  const week = Array.from({ length: 7 }, (_, index) => {
+    const date = new Date(today);
+    date.setDate(today.getDate() - 6 + index);
+    return { date: localDate(date), day: index === 6 ? 'Today' : date.toLocaleDateString('en-US', { weekday: 'short' }) };
+  });
+  const weeklyTradeIns = trades.filter((t) => t.kind === 'Trade in' && t.date >= week[0].date && t.date <= week[6].date);
+  const periodTradeIns = period === 'Today' ? weeklyTradeIns.filter((t) => t.date === week[6].date) : weeklyTradeIns;
   const periodTotal = periodTradeIns.reduce((total, trade) => total + trade.amount, 0);
-  const periodTitle = period === 'Today' ? 'Today' : 'This week';
-
-  const dailyTotals = weekDays.map((day) => ({
-    day: day === 'Today' ? 'Today' : day.slice(0, 3),
-    total: trades
-      .filter((trade) => trade.kind === 'Trade in' && trade.day === day)
-      .reduce((sum, trade) => sum + trade.amount, 0),
+  const periodTitle = period;
+  const dailyTotals = week.map(({ date, day }) => ({
+    day, total: weeklyTradeIns.filter((t) => t.date === date).reduce((total, trade) => total + trade.amount, 0),
   }));
   const highestDailyTotal = Math.max(...dailyTotals.map(({ total }) => total), 1);
 
@@ -66,10 +66,10 @@ function ManagerPage() {
               <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-emerald-800">Manager</p>
               <a href="#/manager/analytics" className="float-right rounded-lg bg-emerald-800 px-4 py-2 text-sm text-white">Explore analytics →</a>
               <h1 className="mt-1 text-xl font-semibold tracking-tight text-emerald-950 sm:text-2xl">Trade activity</h1>
-              <p className="mt-1 text-xs text-stone-500">Sample activity for demonstration.</p>
+              <p className="mt-1 text-xs text-stone-500">Sample activity and trades completed during this session.</p>
             </div>
             <div aria-label="Summary period" className="inline-flex self-start rounded-lg border border-emerald-200 bg-white p-1 sm:self-auto" role="group">
-              {(['Today', 'This week'] as const).map((option) => (
+              {(['Today', 'Last 7 days'] as const).map((option) => (
                 <button
                   aria-pressed={period === option}
                   className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${period === option ? 'bg-emerald-800 text-white' : 'text-stone-600 hover:bg-emerald-50 hover:text-emerald-950'}`}

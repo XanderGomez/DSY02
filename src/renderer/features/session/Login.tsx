@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { demoEmployees, type Employee } from './session';
+import type { Employee } from '../../../shared/contracts/staff';
 
 function LockIcon() {
   return (
@@ -12,15 +12,16 @@ function LockIcon() {
 }
 
 type LoginProps = {
+  employees: Employee[];
   // Supply consecutive failures when authentication is connected.
   failedLoginAttempts?: number;
   onLogin?: (employee: Employee) => void;
 };
 
-function Login({ failedLoginAttempts = 0, onLogin }: LoginProps) {
+function Login({ employees, failedLoginAttempts = 0, onLogin }: LoginProps) {
   const [pin, setPin] = useState('');
   const [employeeId, setEmployeeId] = useState('');
-  const employee = demoEmployees.find(({ id }) => id === employeeId);
+  const employee = employees.find(({ id }) => id === employeeId);
 
   return (
     <div className="bg-[#e6f0e5] text-stone-900">
@@ -34,7 +35,7 @@ function Login({ failedLoginAttempts = 0, onLogin }: LoginProps) {
               <label className="block text-sm font-medium text-emerald-950" htmlFor="demo-employee">Demo employee</label>
               <select id="demo-employee" required value={employeeId} onChange={(event) => setEmployeeId(event.target.value)} className="mb-5 mt-2 min-h-12 w-full rounded-lg border border-emerald-700 bg-white px-3 text-base text-emerald-950 focus-visible:outline-2 focus-visible:outline-emerald-800">
                 <option value="" disabled>Select your employee account</option>
-                {demoEmployees.map(({ id, name }) => <option key={id} value={id}>{name} (#{id})</option>)}
+                {employees.map(({ id, name }) => <option key={id} value={id}>{name} (#{id})</option>)}
               </select>
               <label className="block text-sm font-medium text-emerald-950" htmlFor="employee-pin">Employee PIN</label>
               <div className="mt-2 flex min-h-14 items-center gap-3 rounded-lg border-2 border-emerald-700 bg-emerald-50 px-4 text-emerald-800 shadow-sm shadow-emerald-950/5 focus-within:ring-4 focus-within:ring-emerald-800/20">

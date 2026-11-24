@@ -1,11 +1,10 @@
 import { useState } from 'react';
-import { searchTransactions, trades, type Trade } from './transactions';
-import { transactionDate } from '../manager/analytics';
+import { searchTransactions, type Trade } from './transactions';
 import TransactionReceipt from './TransactionReceipt';
 
 const currency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
 
-export default function TransactionHistory() {
+export default function TransactionHistory({ trades }: { trades: Trade[] }) {
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState<Trade | null>(null);
   const matching = searchTransactions(trades, query);
@@ -14,7 +13,7 @@ export default function TransactionHistory() {
       <p className="text-xs font-semibold uppercase tracking-widest text-emerald-800">Manager / History</p>
       <h1 className="mt-2 text-3xl font-semibold text-emerald-950">Transaction history</h1>
       <p className="mt-2 text-sm text-stone-600">Browse all trade-ins and trade-outs, or find a transaction using the number from the POS receipt.</p>
-      <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900">Sample history with demo POS numbers (for example, 102841). Trade forms currently check details only; new entries are not saved to this history yet.</p>
+      <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900">Includes sample receipts and trades completed during this session.</p>
       <section aria-label="Search transaction history" className="mt-5 rounded-xl border border-emerald-200 bg-white p-5">
         <label className="block text-sm font-medium text-emerald-950" htmlFor="history-pos-search">POS transaction number</label>
         <div className="mt-2 flex gap-3">
@@ -27,7 +26,7 @@ export default function TransactionHistory() {
           <thead className="border-b border-emerald-200 text-xs text-stone-500"><tr>{['Transaction / POS number', 'Date', 'Type', 'Customer', 'Employee / Store', 'Credit'].map((label) => <th scope="col" key={label} className="p-3">{label}</th>)}</tr></thead>
           <tbody>{matching.map((trade) => <tr key={trade.id} className="border-b border-emerald-100 hover:bg-emerald-50">
             <td className="p-3"><button type="button" className="font-semibold text-emerald-800 underline focus-visible:outline-2" aria-label={`View receipt for transaction ${trade.id}`} onClick={() => setSelected(trade)}>{trade.id}</button><p className="mt-1 break-all text-xs text-stone-600">POS: {trade.posTransactionId || 'Not recorded'}</p></td>
-            <td className="p-3">{transactionDate(trade)}</td><td className="p-3">{trade.kind}</td><td className="p-3">{trade.account}</td>
+            <td className="p-3">{trade.date}</td><td className="p-3">{trade.kind}</td><td className="p-3">{trade.account}</td>
             <td className="p-3">{trade.employee}<p className="text-xs text-stone-500">{trade.store}</p></td>
             <td className={`whitespace-nowrap p-3 font-medium ${trade.kind === 'Trade in' ? 'text-emerald-800' : 'text-red-700'}`}>{trade.kind === 'Trade in' ? '+' : '−'}{currency.format(trade.amount)}</td>
           </tr>)}</tbody>

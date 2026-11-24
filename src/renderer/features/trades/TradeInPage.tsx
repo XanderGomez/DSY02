@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useRef, useState, type FormEvent } from 'react';
 import TradeAccountContext, { type TradePageProps } from './TradeAccountContext';
 import { rankTradeCategories, type CategoryTradeCounts } from './tradeCategories';
 
@@ -8,7 +8,7 @@ function filterClass(selected: boolean) {
   return `min-h-11 rounded-md border px-3 py-2 text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-800 ${selected ? 'border-emerald-800 bg-emerald-800 text-white' : 'border-emerald-200 bg-white text-emerald-950 hover:bg-emerald-100'}`;
 }
 
-export default function TradeInPage({ customer, categoryTradeCounts }: TradePageProps & { categoryTradeCounts?: CategoryTradeCounts }) {
+export default function TradeInPage({ customer, onSubmit, categoryTradeCounts }: TradePageProps & { categoryTradeCounts?: CategoryTradeCounts }) {
   const [category, setCategory] = useState('');
   const [showMoreCategories, setShowMoreCategories] = useState(false);
   // Each page receives counts for its own trade direction only.
@@ -20,37 +20,21 @@ export default function TradeInPage({ customer, categoryTradeCounts }: TradePage
   const [amount, setAmount] = useState('');
   const [posTransactionId, setPosTransactionId] = useState('');
   const [error, setError] = useState('');
-  const [reviewed, setReviewed] = useState(false);
+  const submitted = useRef(false);
   function clearSelection() {
     setError('');
-    setReviewed(false);
   }
 
-  function reviewForm(event: FormEvent<HTMLFormElement>) {
+  function submitTrade(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setReviewed(false);
-    if (!category || !itemName.trim()) {
-      setError('Choose a category and enter the item name.');
-      return;
+    if (submitted.current) return;
+    submitted.current = true;
+    try {
+      onSubmit({ category, item: itemName, description, amount, posTransactionId });
+    } catch (cause) {
+      submitted.current = false;
+      setError(cause instanceof Error ? cause.message : 'Unable to record this trade.');
     }
-    if (!posTransactionId.trim()) {
-      setError('Enter the related POS transaction ID.');
-      return;
-    }
-    const value = amount.trim();
-    if (!/^\d+(\.\d{1,2})?$/.test(value)) {
-      setError('Enter a positive store credit amount with up to two decimal places, such as 12.50.');
-      return;
-    }
-    const [dollars, fractionalCents = ''] = value.split('.');
-    const cents = Number(dollars) * 100 + Number(fractionalCents.padEnd(2, '0'));
-    if (!Number.isSafeInteger(cents) || cents < 1) {
-      setError('Enter a valid store credit amount of at least $0.01.');
-      return;
-    }
-    setError('');
-    setAmount(`${Math.floor(cents / 100)}.${String(cents % 100).padStart(2, '0')}`);
-    setReviewed(true);
   }
 
   function resetForm() {
@@ -69,7 +53,7 @@ export default function TradeInPage({ customer, categoryTradeCounts }: TradePage
         <TradeAccountContext customer={customer} />
         <h1 className="text-2xl font-semibold tracking-tight text-emerald-950 sm:text-3xl">Trade in</h1>
         <p className="mt-2 text-sm text-stone-600">Describe the item the customer is trading in and enter the store credit offered.</p>
-        <form className="mt-7" onSubmit={reviewForm}>
+        <form className="mt-7" onSubmit={submitTrade}>
           <fieldset className="mt-4">
             <legend className="text-sm font-medium text-emerald-950">Category <span className="text-red-700">*</span></legend>
             <p className="mt-2 text-sm text-stone-600">Choose the item type, or select General if it is not listed.</p>
@@ -95,10 +79,9 @@ export default function TradeInPage({ customer, categoryTradeCounts }: TradePage
           <input id="trade-in-pos-transaction-id" name="posTransactionId" className={fieldClass} type="text" required maxLength={200} placeholder="Enter the related POS transaction ID" aria-describedby="trade-in-pos-transaction-id-help" value={posTransactionId} onChange={(event) => { setPosTransactionId(event.target.value); clearSelection(); }} />
           <p id="trade-in-pos-transaction-id-help" className="mt-2 text-xs text-stone-600">Reference the POS transaction associated with this trade in.</p>
           {error && <p className="mt-4 text-sm text-red-700" role="alert">{error}</p>}
-          {reviewed && <p className="mt-4 rounded-md border border-emerald-200 bg-emerald-100 p-3 text-sm text-emerald-950" role="status">Form checked. The trade-in details are valid. This preview does not save trades or issue credit.</p>}
           <div className="mt-6 flex flex-wrap justify-end gap-3 border-t border-emerald-200 pt-5">
             <button className="rounded-md px-4 py-2.5 text-sm font-medium text-emerald-900 hover:bg-emerald-100 focus-visible:outline-2" type="button" onClick={resetForm}>Clear form</button>
-            <button className={buttonClass} type="submit">Check trade in</button>
+            <button className={buttonClass} type="submit">Issue credit</button>
           </div>
         </form>
       </section>

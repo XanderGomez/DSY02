@@ -1,10 +1,17 @@
 # Backend structure
 
-This is a directory scaffold only. No backend, API, storage implementation, or
-new tests exist yet. Hosting, database, runtime, and API framework remain undecided.
-The existing frontend demo remains in place.
+The demo runs one credit service in the app window. Its in-memory store holds
+customer balances in integer cents and a receipt for each completed trade.
+Navigation and logout retain the session. Reloading or closing the window
+discards it. Each window has its own state.
 
-## Where future work belongs
+The memory demo seed adds the three customer accounts and replays nine dated trades through the normal credit service on startup. Each receipt contributes to its customer’s balance and the manager totals.
+
+The application entry point injects the service into the router using the
+shared credit contract. The desktop app and browser preview use the same
+code. The demo does not provide a network API or staff authentication.
+
+## Directory responsibilities
 
 | Directory | Responsibility |
 | --- | --- |
@@ -30,10 +37,7 @@ Place its schema, queries, and migrations with that implementation. Database set
 transaction boundaries, and deployment configuration will need concrete design work
 at that point; the directory scaffold does not resolve those decisions.
 
-The `.gitkeep` files let Git retain otherwise empty directories. Remove each
-placeholder when adding real files to its directory. No build settings, dependencies,
-or test commands have been changed for this scaffold. When backend tests are added,
-update test discovery to include these nested test directories.
+Run `npm test` to include the in-memory credit workflow tests.
 
 ## Decisions awaiting sponsor confirmation
 
