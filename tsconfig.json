@@ -11,5 +11,6 @@
     "outDir": "dist",
     "moduleResolution": "bundler",
     "resolveJsonModule": true
-  }
+  },
+  "include": ["src", "config", "forge.config.ts", "forge.env.d.ts"]
 }

@@ -1,6 +1,6 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const { backDestination, parseRoute, routePath } = require('../src/routes.ts');
+const { backDestination, parseRoute, routePath } = require('../src/renderer/app/routes.ts');
 
 test('all pages round-trip through hash URLs', () => {
   const routes = [

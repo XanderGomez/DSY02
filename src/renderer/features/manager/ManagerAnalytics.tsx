@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { demoEnd, filterTrades, summarize, transactionDate, type Filters } from './analytics';
-import { trades, type Trade } from './transactions';
-import TransactionReceipt from './TransactionReceipt';
+import { trades, type Trade } from '../transactions/transactions';
+import TransactionReceipt from '../transactions/TransactionReceipt';
 
 const money = (value: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
 const defaults: Filters = { start: '2026-11-04', end: demoEnd, store: '', employee: '', kind: '', category: '' };

@@ -2,7 +2,7 @@ import { useMemo, useState, type FormEvent } from 'react';
 
 import type { CustomerAccountDetails as Customer } from './CustomerAccount';
 
-type AppProps = {
+type CustomerSearchProps = {
   customers: Customer[];
   query: string;
   onQueryChange: (query: string) => void;
@@ -19,7 +19,7 @@ function SearchIcon() {
   );
 }
 
-function App({ customers, query, onQueryChange, onSelectCustomer, onCreateCustomer }: AppProps) {
+function CustomerSearch({ customers, query, onQueryChange, onSelectCustomer, onCreateCustomer }: CustomerSearchProps) {
   const [isCreating, setIsCreating] = useState(false);
   const [createError, setCreateError] = useState('');
 
@@ -268,4 +268,4 @@ function App({ customers, query, onQueryChange, onSelectCustomer, onCreateCustom
   );
 }
 
-export default App;
+export default CustomerSearch;

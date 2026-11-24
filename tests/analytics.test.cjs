@@ -1,7 +1,7 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const { filterTrades, summarize } = require('../src/analytics.ts');
-const { trades } = require('../src/transactions.ts');
+const { filterTrades, summarize } = require('../src/renderer/features/manager/analytics.ts');
+const { trades } = require('../src/renderer/features/transactions/transactions.ts');
 const all = { start: '2026-11-04', end: '2026-11-12', store: '', employee: '', kind: '', category: '' };
 
 test('ledger totals include both directions and reconcile', () => {

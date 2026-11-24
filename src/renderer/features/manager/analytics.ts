@@ -1,4 +1,4 @@
-import type { Trade } from './transactions';
+import type { Trade } from '../transactions/transactions';
 
 // Fixed demo window: dates stay reproducible and do not imply live activity.
 export const demoEnd = '2026-11-12';

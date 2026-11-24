@@ -1,6 +1,6 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const { searchTransactions, trades } = require('../src/transactions.ts');
+const { searchTransactions, trades } = require('../src/renderer/features/transactions/transactions.ts');
 
 test('history shows all records when search is empty and searches POS references', () => {
   assert.equal(searchTransactions(trades, '').length, trades.length);
