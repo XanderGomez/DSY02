@@ -1,4 +1,5 @@
-import type { Employee, StoreLocation } from '../features/session/session';
+import type { Employee, StoreLocation } from '../../shared/contracts/staff';
+import { storeBanner } from '../features/session/session';
 
 type AppHeaderProps = {
   store: StoreLocation | null;
@@ -25,7 +26,7 @@ export default function AppHeader({ store, employee, backLabel, onBack, onLogout
           </nav>
         ) : <span className="text-sm text-emerald-100">Staff login</span>}
       </div>
-      <div aria-label="Current store and employee" className={`mx-4 grid min-h-14 grid-cols-3 items-center gap-2 rounded-b-2xl px-3 py-1.5 shadow-md shadow-emerald-950/10 sm:mx-8 sm:gap-4 sm:px-5 lg:mx-12 ${store?.bannerClass ?? 'bg-stone-200 text-stone-800'}`}>
+      <div aria-label="Current store and employee" className={`mx-4 grid min-h-14 grid-cols-3 items-center gap-2 rounded-b-2xl px-3 py-1.5 shadow-md shadow-emerald-950/10 sm:mx-8 sm:gap-4 sm:px-5 lg:mx-12 ${storeBanner(store)}`}>
         <div className="min-w-0">
           {onBack && backLabel && <nav aria-label="Back navigation">
             <button type="button" onClick={onBack} className="-ml-1 flex min-h-11 max-w-full items-center gap-1.5 rounded-lg px-1 py-1.5 text-left text-xs font-medium transition-colors hover:bg-white/15 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current sm:gap-2 sm:px-2 sm:text-sm">

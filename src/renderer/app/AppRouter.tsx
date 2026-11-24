@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import CustomerSearch from '../features/customers/CustomerSearch';
 import AppHeader from '../components/AppHeader';
-import CustomerAccount, { type CustomerAccountDetails } from '../features/customers/CustomerAccount';
+import CustomerAccount from '../features/customers/CustomerAccount';
 import Login from '../features/session/Login';
 import TransactionHistory from '../features/transactions/TransactionHistory';
 import ManagerAnalytics from '../features/manager/ManagerAnalytics';
@@ -10,19 +10,17 @@ import TradeInPage from '../features/trades/TradeInPage';
 import TradeOutPage from '../features/trades/TradeOutPage';
 import StoreSelection from '../features/session/StoreSelection';
 import { backDestination, parseRoute, routePath, type Route } from './routes';
-import type { Employee, StoreLocation } from '../features/session/session';
+import type { Employee, StoreDirectory, StoreLocation } from '../../shared/contracts/staff';
 
-const demoCustomers: CustomerAccountDetails[] = [
-  { id: 1, name: 'Olivia Bennett', email: 'olivia.bennett@email.com', phone: '(402) 555-0142', creditBalance: 125.5 },
-  { id: 2, name: 'Noah Williams', email: 'noah.williams@email.com', phone: '(402) 555-0188', creditBalance: 48 },
-  { id: 3, name: 'Ava Martinez', email: 'ava.martinez@email.com', phone: '(402) 555-0126', creditBalance: 0 },
-];
+import type { CreditSession, TradeFields, TradeRequest } from '../../shared/contracts/credit';
+import { toDisplayTrade } from '../features/transactions/transactions';
 
-export default function AppRouter() {
+export default function AppRouter({ credit, directory }: { credit: CreditSession; directory: StoreDirectory }) {
   const [hash, setHash] = useState(() => window.location.hash);
   const [store, setStore] = useState<StoreLocation | null>(null);
   const [employee, setEmployee] = useState<Employee | null>(null);
-  const [customers, setCustomers] = useState(demoCustomers);
+  const [{ customers, transactions }, setSnapshot] = useState(() => credit.snapshot());
+  const trades = transactions.map(toDisplayTrade);
   const [query, setQuery] = useState('');
   const requestedRoute = parseRoute(hash);
   const selectedCustomer = requestedRoute && 'customerId' in requestedRoute
@@ -65,20 +63,25 @@ export default function AppRouter() {
   const back = backDestination(route);
   let content: ReactNode;
   if (route.page === 'store') {
-    content = <StoreSelection onSelect={(location) => { setStore(location); navigate({ page: 'login' }); }} />;
+    content = <StoreSelection stores={directory.stores} onSelect={(location) => { setStore(location); navigate({ page: 'login' }); }} />;
   } else if (route.page === 'login') {
-    content = <Login onLogin={(staff) => { setEmployee(staff); backToSearch(); }} />;
+    content = <Login employees={directory.employees} onLogin={(staff) => { setEmployee(staff); backToSearch(); }} />;
   } else if (route.page === 'history') {
-    content = <TransactionHistory />;
+    content = <TransactionHistory trades={trades} />;
   } else if (route.page === 'analytics') {
-    content = <ManagerAnalytics />;
+    content = <ManagerAnalytics trades={trades} />;
   } else if (route.page === 'manager') {
-    content = <ManagerPage />;
-  } else if (selectedCustomer && 'customerId' in route) {
-    if (route.page === 'trade-in') content = <TradeInPage key={selectedCustomer.id} customer={selectedCustomer} />;
-    else if (route.page === 'trade-out') content = <TradeOutPage key={selectedCustomer.id} customer={selectedCustomer} />;
+    content = <ManagerPage trades={trades} />;
+  } else if (store && employee && selectedCustomer && 'customerId' in route) {
+    const submit = (kind: TradeRequest['kind'], fields: TradeFields) => {
+      credit.recordTrade({ ...fields, kind, customerId: selectedCustomer.id, store: store.name, employee: employee.name, employeeId: employee.id });
+      setSnapshot(credit.snapshot());
+      navigate({ page: 'account', customerId: selectedCustomer.id });
+    };
+    if (route.page === 'trade-in') content = <TradeInPage onSubmit={(fields) => submit('Trade in', fields)} key={selectedCustomer.id} customer={selectedCustomer} />;
+    else if (route.page === 'trade-out') content = <TradeOutPage onSubmit={(fields) => submit('Trade out', fields)} key={selectedCustomer.id} customer={selectedCustomer} />;
     else content = (
-      <CustomerAccount customer={selectedCustomer}
+      <CustomerAccount customer={selectedCustomer} trades={trades.filter((trade) => trade.customerId === selectedCustomer.id)}
         onTradeIn={() => navigate({ page: 'trade-in', customerId: selectedCustomer.id })}
         onTradeOut={() => navigate({ page: 'trade-out', customerId: selectedCustomer.id })} />
     );
@@ -86,7 +89,8 @@ export default function AppRouter() {
     content = <CustomerSearch customers={customers} query={query} onQueryChange={setQuery}
       onSelectCustomer={(customer) => navigate({ page: 'account', customerId: customer.id })}
       onCreateCustomer={(customer) => {
-        setCustomers((current) => [customer, ...current]);
+        credit.addCustomer(customer);
+        setSnapshot(credit.snapshot());
         navigate({ page: 'account', customerId: customer.id });
       }} />;
   }

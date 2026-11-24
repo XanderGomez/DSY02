@@ -1,14 +1,12 @@
-export type CustomerAccountDetails = {
-  id: number;
-  name: string;
-  email: string;
-  phone: string;
-  /** Available store credit in dollars. */
-  creditBalance: number;
-};
+import type { Customer } from '../../../shared/contracts/credit';
+
+import type { Trade } from '../transactions/transactions';
+
+export type CustomerAccountDetails = Customer;
 
 export type CustomerAccountProps = {
   customer: CustomerAccountDetails;
+  trades: Trade[];
   onTradeIn: () => void;
   onTradeOut: () => void;
 };
@@ -41,6 +39,7 @@ function TradeIcon({ direction }: { direction: 'in' | 'out' }) {
 
 function CustomerAccount({
   customer,
+  trades,
   onTradeIn,
   onTradeOut,
 }: CustomerAccountProps) {
@@ -53,7 +52,7 @@ function CustomerAccount({
             Available store credit
           </h1>
           <p aria-live="polite" aria-atomic="true" className="mt-3 break-words text-5xl font-semibold tracking-tight text-emerald-950 tabular-nums sm:text-6xl">
-            {currencyFormatter.format(customer.creditBalance)}
+            {currencyFormatter.format(customer.balanceCents / 100)}
           </p>
           <p className="mt-3 text-sm text-stone-600">Use this balance toward store purchases.</p>
 
@@ -98,6 +97,22 @@ function CustomerAccount({
             </span>
           </button>
         </div>
+        <section className="mt-5 rounded-xl border border-emerald-200 bg-white p-5">
+          <h2 className="font-semibold text-emerald-950">Credit history</h2>
+          {trades.length === 0 ? <p className="mt-2 text-sm text-stone-600">No trades yet.</p> : (
+            <ul className="mt-2 divide-y divide-emerald-100">
+              {trades.map((trade) => (
+                <li key={trade.id} className="flex justify-between gap-4 py-3 text-sm">
+                  <div><p className="font-medium">{trade.item}</p>
+                    <p className="text-xs text-stone-600">{trade.date} · {trade.store} · POS {trade.posTransactionId}</p></div>
+                  <span className={trade.kind === 'Trade in' ? 'text-emerald-800' : 'text-red-700'}>
+                    {trade.kind === 'Trade in' ? '+' : '−'}{currencyFormatter.format(trade.amount)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
       </div>
     </main>
   );

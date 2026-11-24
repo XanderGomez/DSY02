@@ -26,7 +26,7 @@ application with `npm start`.
 
 Run `npm run typecheck` to check TypeScript without generating files, and
 `npm run lint` to check for common code problems. Run `npm test` for the routing, analytics,
-and transaction history tests. Use `npm run package` to build the desktop app.
+transaction history, and credit service tests. Use `npm run package` to build the desktop app.
 
 Use `npm run lint:fix` to apply available automatic lint fixes, then review the diff.
 See [linting and code checks](docs/development/linting.md) for what each check does,
@@ -38,7 +38,7 @@ how ESLint is configured, and why the lint tools use TypeScript 6.0.
 config/                      Vite configurations for Electron and React
 docs/backend/                Backend structure and unconfirmed requirements
 src/
-  backend/                   Future backend (directory scaffold only)
+  backend/                   Credit service and storage
     api/routes/              API endpoint handlers
     domain/models/           Domain records and relationships
     domain/rules/            Business validation and calculations
@@ -55,12 +55,12 @@ src/
       manager/               Manager overview and analytics
       session/               Store selection, staff login, and demo staff
       trades/                Trade-in/out forms and category helpers
-      transactions/          Demo ledger, transaction history, and receipts
+      transactions/          Transaction history and receipts
     styles/                  Global styles and Tailwind entry point
-    main.tsx                 React entry point
-  shared/contracts/          Future frontend/backend request and response contracts
+  main.tsx                   Starts the demo credit session and renders the app
+  shared/contracts/          Shared frontend/backend contracts
 tests/                       Node.js tests for application logic
-  backend/                   Future backend tests
+  backend/                   Backend tests
     unit/                    Domain rules and service tests
     integration/             API, service, and storage integration tests
     fixtures/                Reusable test data
@@ -71,16 +71,14 @@ features in `src/renderer/components`. Electron Forge, TypeScript, ESLint, and
 the HTML entry point retain their conventional root locations. Generated output
 (`.vite/`, `dist/`, and `out/`) and dependencies (`node_modules/`) are ignored.
 
-The backend and shared contract directories contain placeholders only. See the
-[backend structure guide](docs/backend/README.md) for responsibilities, dependency
-boundaries, and decisions awaiting sponsor confirmation. Hosting and database
-choices remain open; no backend functionality is wired into the app yet.
+The app starts one in-memory credit service per window. See the
+[backend structure guide](docs/backend/README.md) for storage responsibilities and open sponsor decisions.
 
 ## Frontend demo
 
 The app starts with manual store selection, followed by staff login. Select a demo
 employee and enter any nonempty numeric PIN to open customer search; this is demo
-navigation, not authentication. Store colors and demo staff are configured in
+navigation, not authentication. Store colors are configured in
 `src/renderer/features/session/session.ts` (North Location (Main): blue, Millard Location: purple). Locations
 use sponsor-provided contact details; colors are provisional and employee accounts
 are placeholders pending backend authentication. All employees are available at
@@ -99,9 +97,13 @@ Customer records and the search query remain in memory while navigating. Reloadi
 resets the demo and returns to store selection. Logging out clears the employee,
 PIN/form state, and search query while retaining the selected store and customer
 records for the next employee. Browser history cannot reopen logged-in pages after
-logout. Trade forms validate inputs only; they do not change balances or save
-transactions. Manager activity is sample data, and manager
-access is unrestricted in this demo.
+logout. Trade-ins issue credit and trade-outs redeem it. Each completed trade updates
+the customer balance and creates a receipt in the same operation.
+
+To try the full workflow, select Ava ($0), issue $25, and redeem $10 using the
+trade forms. Attempt to redeem $16. Ava should still have $15. In Manager →
+View all transaction history, search for the POS references you used to open
+the two completed receipts. Reload to reset the balances and receipts.
 
 The manager dashboard keeps its compact summary, daily trade-in chart, employee
 lookup, and recent transactions. The Credit column shows additions in green with
@@ -116,6 +118,24 @@ logged in, and to login otherwise.
 
 Run just the routing checks with `node --test tests/routes.test.cjs`.
 
+### Video walkthrough
+
+Open Olivia Bennett’s account to trace her $125.50 balance: a $98 binder trade-in,
+a $15 starter set redemption, and a $42.50 Zelda trade-in. Open manager history
+and look up POS `102841` to see the Zelda receipt. Redeem $10 with a new POS
+reference and show the $115.50 balance and the new receipt. Reload to repeat.
+
+The customers, staff, locations, and opening trades are defined in
+`src/backend/storage/memory/demoSession.ts`. Each fresh window replays the
+nine example trades through the credit service starting from zero balances.
+
+### Try a credit transaction
+
+1. Start a fresh demo, log in, and open Ava Martinez's account. Her opening balance is $0.
+2. Choose **Trade in**, select a category, enter an item name, offer $25, and use POS reference `DEMO-001`. Select **Issue credit**. Her account now shows $25.
+3. Choose **Trade out** and enter an item, category, $10, and `DEMO-002`. Select **Redeem credit**. Her account now shows $15.
+4. Try to redeem $16. The form shows the available $15. Open **Manager → View all transaction history** and search for `DEMO-` to see the two successful receipts.
+
 ### Manager analytics
 
 Choose **Explore analytics** on the manager page (`#/manager/analytics`). Date,
@@ -123,11 +143,8 @@ store, employee, trade type, and category filters apply to every metric, chart,
 and receipt list. Select a breakdown bar to filter its transactions, then select
 an ID to open the same receipt component used by the manager overview.
 
-The analytics view uses the shared demo ledger in `src/renderer/features/transactions/transactions.ts`, with an
-explicit November 4–12, 2026 demo date mapping in `src/renderer/features/manager/analytics.ts`. This branch
-has no persisted transaction history or backend integration; replace the shared
-ledger and demo dates with recorded transactions when that integration is ready.
-Customer counts use distinct sample names until stable customer IDs are available.
+Analytics reads the same in-memory receipts as customer accounts and manager history.
+Each receipt has a timestamp and customer ID. Demo trades cover the last seven days.
 
 Metrics include credit issued, credit redeemed, net credit movement, transaction
 count, average transaction value, and customers served. Daily movement and
@@ -151,5 +168,4 @@ The bottom of the manager page links to **View all transaction history**
 immediately by a full or partial POS transaction number. Select a transaction ID
 to open its receipt, which now includes the POS reference. Example demo POS
 number: `102841`. POS references are stored as strings to preserve leading zeros.
-Both trade forms require a POS transaction ID. Forms still validate only and do
-not save new records; history will need the persisted ledger when saving is added.
+Both trade forms require a POS transaction ID. Successful trades appear immediately in history.

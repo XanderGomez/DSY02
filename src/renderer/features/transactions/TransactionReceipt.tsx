@@ -7,7 +7,7 @@ export default function TransactionReceipt({ selectedTrade, onClose }: { selecte
                   <div>
                     <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-emerald-800">Transaction receipt</p>
                     <h3 className="mt-1 text-lg font-semibold text-emerald-950" id="transaction-receipt-title">{selectedTrade.id}</h3>
-                    <p className="mt-1 text-xs text-stone-500">{selectedTrade.day} · {selectedTrade.time}</p>
+                    <p className="mt-1 text-xs text-stone-500">{selectedTrade.date} · {selectedTrade.time}</p>
                   </div>
                   <button
                     aria-label="Close transaction receipt"
@@ -44,6 +44,7 @@ export default function TransactionReceipt({ selectedTrade, onClose }: { selecte
                   <div>
                     <p className="font-medium text-stone-800">{selectedTrade.item}</p>
                     <p className="mt-1 text-xs text-stone-500">{selectedTrade.category}</p>
+                    {selectedTrade.description && <p className="mt-1 break-words text-sm">{selectedTrade.description}</p>}
                   </div>
                   <p className={`shrink-0 font-medium tabular-nums ${selectedTrade.kind === 'Trade in' ? 'text-emerald-800' : 'text-red-700'}`}>{selectedTrade.kind === 'Trade in' ? '+' : '−'}{currency.format(selectedTrade.amount)}</p>
                 </div>

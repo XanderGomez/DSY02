@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { demoEnd, filterTrades, summarize, transactionDate, type Filters } from './analytics';
-import { trades, type Trade } from '../transactions/transactions';
+import { filterTrades, summarize, type Filters } from './analytics';
+import type { Trade } from '../transactions/transactions';
 import TransactionReceipt from '../transactions/TransactionReceipt';
 
 const money = (value: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
-const defaults: Filters = { start: '2026-11-04', end: demoEnd, store: '', employee: '', kind: '', category: '' };
 const field = 'mt-1 w-full rounded-lg border border-emerald-200 bg-white px-3 py-2 text-sm focus:outline-emerald-700';
 const panel = 'rounded-xl border border-emerald-200 bg-white p-5';
 
@@ -19,7 +18,9 @@ function Breakdown({ title, rows, onSelect }: { title: string; rows: { label: st
   </section>;
 }
 
-export default function ManagerAnalytics() {
+export default function ManagerAnalytics({ trades }: { trades: Trade[] }) {
+  const dates = trades.map((t) => t.date).sort();
+  const defaults: Filters = { start: dates.at(0) ?? '', end: dates.at(-1) ?? '', store: '', employee: '', kind: '', category: '' };
   const [filters, setFilters] = useState<Filters>(defaults);
   const [selected, setSelected] = useState<Trade | null>(null);
   const invalid = !filters.start || !filters.end || filters.start > filters.end;
@@ -30,13 +31,13 @@ export default function ManagerAnalytics() {
     const rows = filtered.filter((t) => t[key] === label);
     return { label, count: rows.length, value: rows.reduce((sum, t) => sum + Math.round(t.amount * 100), 0) / 100 };
   }).sort((a, b) => b.value - a.value);
-  const days = [...new Set(filtered.map(transactionDate))].sort().map((date) => ({ date, ...summarize(filtered.filter((t) => transactionDate(t) === date)) }));
+  const days = [...new Set(filtered.map((t) => t.date))].sort().map((date) => ({ date, ...summarize(filtered.filter((t) => t.date === date)) }));
   const maxDay = Math.max(...days.flatMap((d) => [d.issued, d.redeemed]), 1);
   return <main className="mx-auto max-w-6xl px-5 py-8 text-stone-900 sm:px-8">
     <p className="text-xs font-semibold uppercase tracking-widest text-emerald-800">Manager / Analytics</p>
     <h1 className="mt-2 text-3xl font-semibold text-emerald-950">Understand your trade activity</h1>
     <p className="mt-2 text-sm text-stone-600">Follow credit movement, spot busy categories, and open the receipt behind every transaction.</p>
-    <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-900">Demo data · November 4–12, 2026. Analytics and manager receipts share the same sample records. Live transaction storage is not connected.</p>
+    <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-900">Includes demo trades and new transactions from this session.</p>
     <section aria-label="Analytics filters" className={`${panel} mt-5`}>
       <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
         <label className="text-xs font-medium">From<input type="date" className={field} value={filters.start} onChange={(e) => set('start', e.target.value)} /></label>
@@ -56,7 +57,7 @@ export default function ManagerAnalytics() {
         ['Net credit change', money(summary.net), 'Issued − redeemed in this period'],
         ['Transactions', String(summary.count), 'Trade-ins and trade-outs'],
         ['Average transaction', money(summary.average), 'Combined credit activity ÷ transactions'],
-        ['Customers served', String(summary.customers), 'Distinct customer names in sample records'],
+        ['Customers served', String(summary.customers), 'Distinct customers in the selected records'],
       ].map(([label, value, detail]) => <section key={label} className={panel}><h2 className="text-xs font-medium text-stone-600">{label}</h2><p className="mt-2 text-2xl font-semibold text-emerald-950">{value}</p><p className="mt-1 text-xs text-stone-500">{detail}</p></section>)}
     </div>
     <p className="mt-3 text-xs text-stone-600">Net credit change is the movement during this period; an opening balance is needed to calculate outstanding credit. Credit activity does not measure sales or profit.</p>
@@ -76,7 +77,7 @@ export default function ManagerAnalytics() {
       </div>
       <section className={`${panel} mt-5`}><h2 className="font-semibold text-emerald-950">Transactions behind the numbers</h2><p role="status" className="mt-1 text-xs text-stone-500">Showing {filtered.length} of {trades.length} transactions matching the filters above · select an ID to open its receipt</p>
         <div className="mt-4 overflow-x-auto"><table className="w-full min-w-[740px] text-left text-sm"><thead className="border-b border-emerald-200 text-xs text-stone-500"><tr>{['Transaction', 'Date', 'Customer', 'Category', 'Employee / Store', 'Credit'].map((h) => <th scope="col" className="p-2" key={h}>{h}</th>)}</tr></thead>
-          <tbody>{[...filtered].sort((a, b) => transactionDate(b).localeCompare(transactionDate(a)) || b.id.localeCompare(a.id)).map((t) => <tr key={t.id} className="border-b border-emerald-50"><td className="p-2"><button type="button" aria-label={`View receipt for transaction ${t.id}`} className="font-semibold text-emerald-800 underline" onClick={() => setSelected(t)}>{t.id}</button><p className="text-xs text-stone-500">{t.kind}</p></td><td className="p-2">{transactionDate(t)}</td><td className="p-2">{t.account}</td><td className="p-2">{t.category}</td><td className="p-2">{t.employee}<p className="text-xs text-stone-500">{t.store}</p></td><td className={`p-2 whitespace-nowrap font-medium tabular-nums ${t.kind === 'Trade in' ? 'text-emerald-800' : 'text-red-700'}`}>{t.kind === 'Trade in' ? '+' : '−'}{money(t.amount)}</td></tr>)}</tbody>
+          <tbody>{[...filtered].sort((a, b) => b.recordedAt.localeCompare(a.recordedAt)).map((t) => <tr key={t.id} className="border-b border-emerald-50"><td className="p-2"><button type="button" aria-label={`View receipt for transaction ${t.id}`} className="font-semibold text-emerald-800 underline" onClick={() => setSelected(t)}>{t.id}</button><p className="text-xs text-stone-500">{t.kind}</p></td><td className="p-2">{t.date}</td><td className="p-2">{t.account}</td><td className="p-2">{t.category}</td><td className="p-2">{t.employee}<p className="text-xs text-stone-500">{t.store}</p></td><td className={`p-2 whitespace-nowrap font-medium tabular-nums ${t.kind === 'Trade in' ? 'text-emerald-800' : 'text-red-700'}`}>{t.kind === 'Trade in' ? '+' : '−'}{money(t.amount)}</td></tr>)}</tbody>
         </table></div>
         {selected && <div ref={(node) => { if (node) node.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }}><TransactionReceipt selectedTrade={selected} onClose={() => setSelected(null)} /></div>}
       </section>

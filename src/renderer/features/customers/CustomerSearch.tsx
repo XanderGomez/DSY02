@@ -67,7 +67,7 @@ function CustomerSearch({ customers, query, onQueryChange, onSelectCustomer, onC
       name: String(formData.get('name')).trim(),
       email: String(formData.get('email')).trim(),
       phone,
-      creditBalance: 0,
+      balanceCents: 0,
     };
 
     onQueryChange(phone);
