@@ -83,6 +83,15 @@ navigation, not authentication. Store colors are configured in
 use sponsor-provided contact details; colors are provisional and employee accounts
 are placeholders pending backend authentication. All employees are available at
 both locations; selecting a store does not filter employee accounts.
+The employee picker searches partial names and employee IDs (including `#1042`),
+ignoring case and extra spaces. Results appear only while choosing an account,
+in a panel with a fixed maximum height that scrolls for longer directories.
+Use the arrow keys and Enter to select, or choose a result with the pointer;
+Escape dismisses the panel. Selecting an account moves focus to the PIN field.
+Editing or clearing the employee selection clears the PIN and hides it again.
+The PIN visibility button is optional; sign-in requires a selected account and
+a nonempty numeric PIN. No real authentication or lockout policy is implemented.
+
 Search for Olivia, Noah, or Ava, or create an account. Selecting a customer opens their credit balance,
 with links to trade in and trade out. Each trade page returns to that same account.
 The shared sticky header shows the selected store and employee on every page,
